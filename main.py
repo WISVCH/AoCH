@@ -20,20 +20,9 @@ def filter_non_active_members(data):
     return active_members
 
 
-def return_today_data(members):
-    # today = [{
-    #     name: "string",
-    #     score: int,
-    #     star1: {
-    #         gotten: bool,
-    #         timestamp: "DD:hh:mm"
-    #     }
-    #     start2: {
-    #         gotten: bool,
-    #         timestamp: "DD:HH:mm"
-    #     }
-    # }]
+def return_today_data(members, total_members):
     today_data = []
+
 
     # Get current day
     current_time = datetime.now()
@@ -48,10 +37,9 @@ def return_today_data(members):
                 "2023-12-" + today + " 05:00:00", "%Y-%m-%d %H:%M:%S"
             )
 
-            stars = {}
             person = {
                 "name": value["name"],
-                "score": value["local_score"],
+                "score": 0,
             }
 
             for star in ["1", "2"]:
@@ -66,13 +54,58 @@ def return_today_data(members):
                         "star" + star
                     ] = f"{star_time.days} days {star_time.seconds//3600} hours {star_time.seconds//60%60} minutes"
 
+                    person["star_index" + star] = value["completion_day_level"][today][star]["star_index"]
+
             today_data.append(person)
+    today_data.sort(key=lambda x: x["star_index1"])
+    for index, person in enumerate(today_data):
+        person["score"] = total_members - index
+
+    day2_data = [person for person in today_data if "star2" in person]
+    day2_data.sort(key=lambda x: x["star_index2"])
+    for index, person in enumerate(day2_data):
+        person["score"] += total_members - index
+
+    for person in today_data:
+        person.pop("star_index1")
+        if "star_index2" in person:
+            person.pop("star_index2")
+    today_data.sort(key=lambda x: x["score"], reverse=True)
+        
     return today_data
 
+def return_global_data(members):
+    global_data = []
+    for key, value in members.items():
+        person = {
+            "name": value["name"],
+            "score": value["local_score"],
+            "stars": []
+        }
+        for int in range(1, 26):
+            if str(int) in value["completion_day_level"]:
+                if "2" in value["completion_day_level"][str(int)]:
+                    person["stars"].append(2)
+                else:
+                    person["stars"].append(1)
+            else:
+                person["stars"].append(0)
+        
+
+        global_data.append(person)
+    global_data.sort(key=lambda x: x["score"], reverse=True)
+    return global_data
+    
 
 if __name__ == "__main__":
     data = get_data()
     active_members = filter_non_active_members(data)
+    today_data = return_today_data(active_members, len(data['members']))
+    total_data = return_global_data(active_members)
 
-    for person in return_today_data(active_members):
-        print(person)
+    data = {
+        "total": total_data,
+        "today": today_data
+    }
+    
+    print(data)

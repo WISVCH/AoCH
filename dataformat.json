@@ -1,7 +1,7 @@
 total = [{
     name: "string",
     score: int,
-    start: [
+    stars: [
         [012];25
     ]
 }]
@@ -9,12 +9,6 @@ total = [{
 today = [{
     name: "string",
     score: int,
-    star1: {
-        gotten: bool,
-        timestamp: "DD:hh:mm"
-    }
-    start2: {
-        gotten: bool,
-        timestamp: "DD:HH:mm"
-    }
+    star1:  "DD:hh:mm",
+    star2: "DD:HH:mm"
 }]
