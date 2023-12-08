@@ -1,7 +1,8 @@
 from datetime import datetime
-
 import requests
+from flask import Flask, render_template, request, jsonify
 
+app = Flask(__name__)
 
 def get_data():
     url = "https://adventofcode.com/2023/leaderboard/private/view/954860.json"
@@ -96,8 +97,8 @@ def return_global_data(members):
     global_data.sort(key=lambda x: x["score"], reverse=True)
     return global_data
     
-
-if __name__ == "__main__":
+@app.route('/')
+def return_data():
     data = get_data()
     active_members = filter_non_active_members(data)
     today_data = return_today_data(active_members, len(data['members']))
@@ -108,4 +109,4 @@ if __name__ == "__main__":
         "today": today_data
     }
     
-    print(data)
+    return data
