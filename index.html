@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <title>AoC Leaderbord</title>
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+      type="text/javascript"
+    ></script>
+    <script src="get_json.js"></script>
+    <script>
+      // Get the leaderboard
+      $(document).ready(function () {
+        $("#leaderboard").text(get_json());
+      });
+    </script>
+  </head>
+  <body>
+    :
+    <div id="leaderboard"></div>
+  </body>
+</html>
