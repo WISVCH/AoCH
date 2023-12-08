@@ -1,21 +1,533 @@
-<html>
-  <head>
-    <title>AoC Leaderbord</title>
-    <link rel="stylesheet" href="style.css" />
-    <script
-      src="http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
-      type="text/javascript"
-    ></script>
-    <script src="get_json.js"></script>
-    <script>
-      // Get the leaderboard
-      $(document).ready(function () {
-        $("#leaderboard").text(get_json());
-      });
-    </script>
-  </head>
-  <body>
-    :
-    <div id="leaderboard"></div>
-  </body>
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+    <title>AoCH Leaderboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <style>
+        @keyframes elementMove {
+            0% {
+                transform: translateY(0px)
+            }
+
+            94% {
+                transform: translateY(0px)
+            }
+
+            100% {
+                transform: translateY(-105%)
+            }
+        }
+
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            overflow-y: hidden;
+            background-color: black;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #leaderboard_today,
+        #leaderboard_total,
+        #task_today {
+            position: absolute;
+            top: 0;
+            left: calc((100vw - (100vh * 0.5625))/2);
+            height: 100vh;
+            width: calc(100vh * 0.5625);
+
+            transition: transform 300ms linear;
+        }
+
+        #leaderboard_total {
+            left: calc((100vw - (100vh * 0.5625))/2 + 100vw);
+        }
+
+        #task_today {
+            left: calc(-100vw + (100vw - (100vh * 0.5625))/2);
+        }
+
+        .background-image {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+        }
+
+        .wrapper {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            width: calc(100% - 60px);
+            height: calc(100% - 60px);
+            clip-path: inset(0px 0px 0px 0px);
+        }
+
+        .moveLeft {
+            transform: translateX(-100vw);
+        }
+
+        .moveLeft1 {
+            transform: translateX(-200vw);
+        }
+
+        .moveRight {
+            transform: translateX(100vw);
+        }
+
+        .moveRight1 {
+            transform: translateX(200vw);
+        }
+
+        .individual {
+            position: relative;
+            width: 100%;
+            height: 3%;
+            margin-bottom: 2%;
+            transform: translate3d(0px, 0px, 0px);
+            font-family: 'Roboto', sans-serif;
+            font-size: 2vh;
+        }
+
+        .individual>* {
+            background-color: rgba(255, 255, 255, 0.3);
+            margin-left: 1%;
+            display: inline-block;
+            width: 20%;
+            text-align: center;
+        }
+
+        #leaderboard_today>.individual>* {
+            width: 20%;
+        }
+
+        .individual>*:first-child {
+            margin-left: 0;
+            width: 13%;
+            text-align: left;
+        }
+
+        .individual>*:nth-child(2) {
+            width: 44%;
+            text-align: left;
+        }
+
+        .move {
+            animation-name: elementMove;
+            animation-timing-function: linear;
+            animation-duration: 3s;
+            animation-iteration-count: infinite;
+            animation-direction: normal;
+            animation-delay: 0.5s;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div id="leaderboard_today">
+            <img class="background-image" src="/images/eregalerij.jpg">
+            <div class="wrapper leaderboard">
+            </div>
+        </div>
+        <div id="leaderboard_total">
+            <div class="wrapper leaderboard">
+            </div>
+        </div>
+        <div id="task_today">
+            <img class="background-image" src="/images/club-events.jpg">
+            <div class="wrapper task">
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    /// insert child into parent
+    /// `parent` - the HTML element to insert the child into
+    /// `child` - the element to insert (gotten from json request to AoC)
+    /// `moving` - bool indicating if the children should be moving
+    /// `today` - boolean for if it is individual for todays leaderboard
+    function insertIndividual(parent, child, moving, today) {
+        let child_el = document.createElement("div");
+        child_el.classList.add("individual");
+        let score = document.createElement("span");
+        score.textContent = child.score.toString();
+        let name = document.createElement("span");
+        name.textContent = child.name;
+        child_el.appendChild(score);
+        child_el.appendChild(name);
+        if (today) {
+            // element gets added to today leaderboard, thus contains timestamps when it has been handed in
+            let star1 = document.createElement("span");
+            let star2 = document.createElement("span");
+
+            star1.textContent = child.star1 ? child.star1 : "-";
+            star2.textContent = child.star2 ? child.star2 : "-";
+
+            child_el.appendChild(star1);
+            child_el.appendChild(star2);
+        } else {
+            // the element gets added to the total leaderboard
+            let stars = document.createElement("span");
+            let text = "";
+            // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
+            child.stars.forEach((star) => {
+                // add all stars with their color
+                text += "<span color=\"#";
+                if (star === 0) {
+                    text += "333333";
+                } else if (star === 1) {
+                    text += "9999cc";
+                } else if (star === 2) {
+                    text += "ffff66";
+                }
+                text += ";\">*</span>";
+            });
+            start.textContext = text;
+            child_el.appendChild(stars);
+        }
+        if (moving) {
+            child_el.classList.add("move");
+            child_el.addEventListener("animationiteration", cycleChildren);
+        }
+        parent.prepend(child_el);
+    }
+
+    /// This function is called to input leaderboard statistics in a certain wrapper
+    /// - `selector` : this field is the id of the parentwrapper that will contain the children
+    /// - `children` : this field will contain all children that will be added to the parent (it should be an array)
+    /// - `today` : if the children will be added to the today leaderboard this is true
+    function render(selector, children, today) {
+        let el = document.querySelector(selector);
+        // remove all children as we will be adding them again
+        el.innerHTML = "";
+        // adding children
+        children.reverse().forEach((child) => {
+            insertIndividual(el, child, children.length > 20, today);
+        });
+        if (children.length > 20) insertIndividual(el, children[0], true, today);
+    }
+
+    function cycleChildren() {
+        let self = this;
+        if (self.nextElementSibling) {
+            self.innerHTML = self.nextElementSibling.innerHTML;
+        } else {
+            let next = self.parentElement.firstElementChild.innerHTML;
+            self.innerHTML = self.parentElement.firstElementChild.innerHTML;
+        }
+    }
+
+    var playState = 'animation-play-state';
+    var running = true;
+    var index = 0;
+
+    function repeatOften() {
+        switch (index) {
+            case 0:
+                $('#leaderboard_today').toggleClass('moveLeft');
+                $('#leaderboard_total').toggleClass('moveLeft');
+                break;
+            case 1:
+                $('#task_today').toggleClass('moveRight');
+                $('#leaderboard_total').toggleClass('moveLeft');
+                break;
+            case 2:
+                $('#task_today').toggleClass('moveRight');
+                $('#task_today').toggleClass('moveRight1');
+                $('#leaderboard_today').toggleClass('moveLeft');
+                break;
+            case 3:
+                $('#leaderboard_total').toggleClass('moveLeft');
+                $('#leaderboard_today').toggleClass('moveLeft');
+                break;
+            case 4:
+                $('#leaderboard_total').toggleClass('moveLeft');
+                $('#leaderboard_total').toggleClass('moveLeft1');
+                $('#task_today').toggleClass('moveRight1');
+                $('#task_today').toggleClass('moveRight');
+                break;
+            case 5:
+                $('#leaderboard_today').toggleClass('moveLeft');
+                $('#task_today').toggleClass('moveRight1');
+                $('#task_today').toggleClass('moveRight');
+                break;
+            case 6:
+                $('#leaderboard_today').toggleClass('moveRight');
+                $('#leaderboard_total').toggleClass('moveLeft');
+                $('#leaderboard_total').toggleClass('moveLeft1');
+                break;
+            case 7:
+                $('#leaderboard_total').toggleClass('moveLeft');
+                $('#leaderboard_total').toggleClass('moveLeft1');
+                $('#task_today').toggleClass('moveRight1');
+                $('#task_today').toggleClass('moveRight');
+                break;
+            case 8:
+                $('#leaderboard_today').toggleClass('moveRight');
+                $('#task_today').toggleClass('moveRight');
+                break;
+            case 9:
+                $('#leaderboard_today').toggleClass('moveRight');
+                $('#leaderboard_total').toggleClass('moveLeft');
+                $('#leaderboard_total').toggleClass('moveLeft1');
+                break;
+            case 10:
+                $('#task_today').toggleClass('moveRight');
+                $('#leaderboard_total').toggleClass('moveLeft');
+                break;
+            case 11:
+                $('#task_today').toggleClass('moveRight');
+                $('#leaderboard_today').toggleClass('moveRight');
+                break;
+        }
+        index = (index + 1) % 12;
+
+        setTimeout(function() {
+            requestAnimationFrame(repeatOften);
+        }, 30000)
+    }
+    setTimeout(function() {
+        requestAnimationFrame(repeatOften);
+    }, 30000)
+
+
+    function get_data() {
+        const tmp_data = [{
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            }, {
+                name: "Thom Breugelmans",
+                score: 420,
+                star1: "00:15:42",
+                star2: "00:69:00",
+            },
+            {
+                name: "Lars van Tol",
+                score: 69,
+                star1: "00:45:14",
+                star2: "01:05:00",
+            },
+            {
+                name: "Kasper Vaessen",
+                score: 43,
+                star1: "01:42:69",
+            },
+        ]
+
+        render("#leaderboard_today > .wrapper", tmp_data, true);
+    }
+
+    get_data();
+</script>
+
 </html>
