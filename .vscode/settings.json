@@ -1,6 +1,0 @@
-{
-  // Turn off typechecking for python files
-  "python.analysis.typeCheckingMode": "off",
-  // Pylint arguments
-  "pylint.args": ["--c-extension-no-member"]
-}
