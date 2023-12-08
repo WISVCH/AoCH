@@ -1,8 +1,10 @@
 from datetime import datetime
 import requests
 from flask import Flask, render_template, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 def get_data():
     url = "https://adventofcode.com/2023/leaderboard/private/view/954860.json"
