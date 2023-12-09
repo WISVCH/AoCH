@@ -1,7 +1,8 @@
+import os
 from datetime import datetime, timedelta
 
 import requests
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, render_template
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -9,43 +10,45 @@ CORS(app)
 
 data = {}
 last_pull = datetime.now() - timedelta(hours=1)
-
-# Get current day
-current_time = datetime.now() - timedelta(hours=6)
-today = "{dt.day}".format(dt=current_time)
-print(today)
-if int(today) > 25:
-    today = "25"
-this_month = "{dt.month}".format(dt=current_time)
-this_year = "{dt.year}".format(dt=current_time)
-if this_month != "12":
-    today = "25"
-    this_year = str(int(this_year) - 1)
+current_working_directory = os.getcwd()
 
 
-def get_data():
-    global today
-    global this_month
-    global this_year
+def current_time() -> tuple[str, str, str]:
+    """
+    Returns the current day, month, and year in a tuple of strings.
+    If the current day is past Christmas, it will return 25 as the day.
+    """
+    # Get current day
+    current_time = datetime.now() - timedelta(hours=6)
+    this_day = "{dt.day}".format(dt=current_time)
+    if int(this_day) > 25:
+        this_day = "25"
+    this_month = "{dt.month}".format(dt=current_time)
+    this_year = "{dt.year}".format(dt=current_time)
+    if this_month != "12":
+        this_day = "25"
+        this_year = str(int(this_year) - 1)
+
+    return this_day, this_month, this_year
+
+
+def get_data(today: tuple[str, str, str]):
+    """
+    Pulls the data from Advent of Code and returns it as a Leaderboard object.
+    If the data has been pulled in the last 15 minutes, it will return the
+    previously pulled data.
+    """
     global data
     global last_pull
 
+    _, _, this_year = today
+
+    # Advent of Code requests to only be called once every 15 minutes
     now = datetime.now()
     if (now - last_pull) < timedelta(minutes=15):
         return data
 
     app.logger.info("Pulling new data from Advent of Code!")
-
-    # Get current day
-    current_time = datetime.now() - timedelta(hours=6)
-    today = current_time.strftime("%-d")
-    if int(today) > 25:
-        today = "25"
-    this_month = current_time.strftime("%-m")
-    this_year = current_time.strftime("%Y")
-    if this_month != "12":
-        today = "25"
-        this_year = str(int(this_year) - 1)
 
     url = "https://adventofcode.com/" + this_year + "/leaderboard/private/view/954860.json"
     cookie = "session=53616c7465645f5f1c43c14b203359c399a1c7373e63dd4884a54869a787103f3b76a8df0dbcfcab49920c81cd573200b657ea0016db75fb023f35c8ed37264e"
@@ -56,22 +59,31 @@ def get_data():
     return data
 
 
-def filter_non_active_members(data):
+def filter_non_active_members(members):
+    """
+    Filters out members who have not earned any points. They are considered inactive.
+    """
     active_members = {}
-    for key, value in data["members"].items():
+
+    for key, value in members.items():
         if value["local_score"] > 0:
             active_members[key] = value
+
     return active_members
 
 
-def return_today_data(members, total_members):
+def return_day_data(members, total_members, today):
+    """
+    Returns the data for the current day.
+    """
+    this_day, this_month, this_year = today
     today_data = []
 
     for key, value in members.items():
-        if today in value["completion_day_level"]:
+        if this_day in value["completion_day_level"]:
             # Today +5 hours
             time_started = datetime.now().strptime(
-                this_year + "-12-" + today + " 06:00:00", "%Y-%m-%d %H:%M:%S"
+                this_year + "-12-" + this_day + " 06:00:00", "%Y-%m-%d %H:%M:%S"
             )
 
             person = {
@@ -80,10 +92,10 @@ def return_today_data(members, total_members):
             }
 
             for star in ["1", "2"]:
-                if star in value["completion_day_level"][today]:
+                if star in value["completion_day_level"][this_day]:
                     star_time = (
                         datetime.fromtimestamp(
-                            value["completion_day_level"][today][star]["get_star_ts"]
+                            value["completion_day_level"][this_day][star]["get_star_ts"]
                         )
                         - time_started
                     )
@@ -91,7 +103,7 @@ def return_today_data(members, total_members):
                         "star" + star
                     ] = f"{star_time.days} days {star_time.seconds//3600} hours {star_time.seconds//60%60} minutes"
 
-                    person["star_index" + star] = value["completion_day_level"][today][star][
+                    person["star_index" + star] = value["completion_day_level"][this_day][star][
                         "star_index"
                     ]
 
@@ -115,6 +127,9 @@ def return_today_data(members, total_members):
 
 
 def return_global_data(members):
+    """
+    Returns the global data for the leaderboard.
+    """
     global_data = []
     for key, value in members.items():
         person = {"name": value["name"], "score": value["local_score"], "stars": []}
@@ -132,13 +147,28 @@ def return_global_data(members):
     return global_data
 
 
-@app.route("/")
+@app.route("/data")
 def return_data():
-    data = get_data()
-    active_members = filter_non_active_members(data)
-    today_data = return_today_data(active_members, len(data["members"]))
+    """
+    Endpoint for the frontend.
+    """
+    today = current_time()
+    data = get_data(today)
+    active_members = filter_non_active_members(data["members"])
+    today_data = return_day_data(active_members, len(data["members"]), today)
     total_data = return_global_data(active_members)
 
     data = {"total": total_data, "today": today_data}
 
     return data
+
+@app.route("/")
+def return_index():
+    """
+    Endpoint for the frontend.
+    """
+    return render_template("index.html")
+
+
+if __name__ == "__main__":
+    app.run(port=5000, debug=True)
