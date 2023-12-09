@@ -35,14 +35,14 @@ def current_time() -> tuple[str, str, str]:
     """
     # Get current day
     current_time = datetime.now() - timedelta(hours=6)
-    this_day = "{dt.day}".format(dt=current_time)
-    if int(this_day) > 25:
-        this_day = "25"
-    this_month = "{dt.month}".format(dt=current_time)
-    this_year = "{dt.year}".format(dt=current_time)
-    if this_month != "12":
-        this_day = "25"
-        this_year = str(int(this_year) - 1)
+    this_day = current_time.day
+    if this_day > 25:
+        this_day = 25
+    this_month = current_time.month
+    this_year = current_time.year
+    if this_month != 12:
+        this_day = 25
+        this_year = this_year-1
 
     return this_day, this_month, this_year
 
@@ -65,8 +65,7 @@ def get_data(today: tuple[str, str, str]):
 
     app.logger.info("Pulling new data from Advent of Code!")
 
-    url = "https://adventofcode.com/" + this_year + f"/leaderboard/private/view/{leaderboard_id}.json"
-    headers = {"cookie": cookie}
+    url = f"https://adventofcode.com/{this_year}/leaderboard/private/view/{leaderboard_id}.json"
     response = requests.get(url, headers=headers, timeout=5)
     data = response.json()
     last_pull = now
@@ -113,11 +112,9 @@ def return_day_data(members, total_members, today):
     today_data = []
 
     for key, value in members.items():
-        if this_day in value["completion_day_level"]:
-            # Today +5 hours
-            time_started = datetime.now().strptime(
-                this_year + "-12-" + this_day + " 06:00:00", "%Y-%m-%d %H:%M:%S"
-            )
+        if str(this_day) in value["completion_day_level"]:
+            # Today +6 hours
+            time_started = datetime(year=this_year, month=12, day=this_day, hour=6)
 
             person = {
                 "name": value["name"],
@@ -125,10 +122,10 @@ def return_day_data(members, total_members, today):
             }
 
             for star in ["1", "2"]:
-                if star in value["completion_day_level"][this_day]:
+                if star in value["completion_day_level"][str(this_day)]:
                     star_time = (
                         datetime.fromtimestamp(
-                            value["completion_day_level"][this_day][star]["get_star_ts"]
+                            value["completion_day_level"][str(this_day)][star]["get_star_ts"]
                         )
                         - time_started
                     )
@@ -143,7 +140,7 @@ def return_day_data(members, total_members, today):
                         "star" + star
                     ] = star_time_string
 
-                    person["star_index" + star] = value["completion_day_level"][this_day][star][
+                    person["star_index" + star] = value["completion_day_level"][str(this_day)][star][
                         "star_index"
                     ]
 
@@ -184,9 +181,9 @@ def return_global_data(members):
     global_data = []
     for key, value in members.items():
         person = {"name": value["name"], "score": value["local_score"], "stars": []}
-        for int in range(1, 26):
-            if str(int) in value["completion_day_level"]:
-                if "2" in value["completion_day_level"][str(int)]:
+        for i in range(1, 26):
+            if str(i) in value["completion_day_level"]:
+                if "2" in value["completion_day_level"][str(i)]:
                     person["stars"].append(2)
                 else:
                     person["stars"].append(1)
