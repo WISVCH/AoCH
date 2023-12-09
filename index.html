@@ -24,6 +24,7 @@
             overflow-y: hidden;
             background-color: black;
             color: #f8ffdd;
+            font-family: 'Roboto', sans-serif;
         }
 
         .container {
@@ -32,15 +33,40 @@
             position: absolute;
             top: 0;
             left: 0;
-        }
+	}
+
+	h1 {
+	    position: absolute;
+	    width: 60%;
+	    height: 80px;
+	    left: 20%;
+	    top: 30px;
+	    margin: 0;
+	    padding-top: 20px;
+	    padding-bottom: 0;
+	    background-color: rgba(50, 30, 30, 0.8);
+	    text-align: center;
+	    font-size: 64px;
+	}
+	h2 {
+	    position: absolute;
+	    width: 50%;
+	    height: 40px;
+	    left: 25%;
+	    top: 0;
+	    margin: 0;
+	    background-color: rgba(50, 30, 30, 0.8);
+	    text-align: center;
+	    font-size: 35px;
+	}
 
         .leaderboard_today,
         .leaderboard_total,
         .task_today {
             position: absolute;
-            height: calc(100vh - 60px);
+            height: calc(100vh - 160px);
             width: calc(100vw - 60px);
-            top: 30px;
+            top: 130px;
         }
 
         .background-image {
@@ -51,10 +77,10 @@
 
         .wrapper {
             position: relative;
-            top: 0;
+            top: 60px;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 60px);
             clip-path: inset(0px 0px 0px 0px);
         }
 
@@ -77,7 +103,6 @@
             height: 20px;
             margin-bottom: 7px;
             transform: translate3d(0px, 0px, 0px);
-            font-family: 'Roboto', sans-serif;
             font-size: 1vh;
         }
 
@@ -144,13 +169,14 @@
             animation-delay: 0.5s;
         }
     </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <img class="background-image" src="./images/possible-bg-2.jpg">
-        <div class="leaderboard_today transition middle">
+      <img class="background-image" src="./images/possible-bg-2.jpg">
+      <h1>Advent of Code</h1>
+      <div class="leaderboard_today transition middle">
+	<h2>Todays Leaderboard</h2>
             <div class="wrapper leaderboard">
                 <div class="header">
                     <div class="individual">
@@ -160,7 +186,8 @@
                 <div class="content"></div>
             </div>
         </div>
-        <div class="leaderboard_total transition right">
+      <div class="leaderboard_total transition right">
+	<h2>December Leaderboard</h2>
             <div class="wrapper leaderboard">
                 <div class="header">
                     <div class="individual">
@@ -170,7 +197,8 @@
                 <div class="content"></div>
             </div>
         </div>
-        <div class="task_today transition left">
+      <div class="task_today transition left">
+	<h2>Todays Puzzle</h2>
             <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
             <div class="wrapper task"></div>
         </div>
@@ -237,7 +265,7 @@
         parent.prepend(child_el);
     }
 
-    /// This function is called to input leaderboard statistics in a certain wrapper
+    /// This function is callped to input leaderboard statistics in a certain wrapper
     /// - `selector` : this field is the id of the parentwrapper that will contain the children
     /// - `children` : this field will contain all children that will be added to the parent (it should be an array)
     /// - `today` : if the children will be added to the today leaderboard this is true
@@ -268,9 +296,9 @@
     function move_left(el) {
         el.classList.add("left");
         el.classList.remove("middle", "right");
-        if (el.children[0].children.length > 0) {
-            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
-                el.children[0].lastElementChild.children[i].classList.remove("move");
+        if (el.children[1].children.length > 0) {
+            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
+                el.children[1].lastElementChild.children[i].classList.remove("move");
             }
         }
     }
@@ -278,9 +306,9 @@
     function move_middle(el) {
         el.classList.add("middle");
 	el.classList.remove("right", "left");
-        if (el.children[0].children.length > 0 && el.children[0].offsetHeight / 27. < el.children[0].lastElementChild.children.length) {
-            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
-                el.children[0].lastElementChild.children[i].classList.add("move");
+        if (el.children[1].children.length > 0 && el.children[1].offsetHeight / 27. < el.children[1].lastElementChild.children.length) {
+            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
+                el.children[1].lastElementChild.children[i].classList.add("move");
             }
         }
     }
@@ -288,9 +316,9 @@
     function move_right(el) {
         el.classList.add("right");
         el.classList.remove("middle");
-        if (el.children[0].children.length > 0) {
-            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
-                el.children[0].lastElementChild.children[i].classList.remove("move");
+        if (el.children[1].children.length > 0) {
+            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
+                el.children[1].lastElementChild.children[i].classList.remove("move");
             }
         }
     }
@@ -350,7 +378,7 @@
         render(".leaderboard_total > .wrapper > .content", leaderboards.total, false);
     }
 
-    //get_data();
+    get_data();
 </script>
 
 </html>
