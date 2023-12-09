@@ -21,34 +21,26 @@
 
         body {
             margin: 0;
-            overflow-x: hidden;
             overflow-y: hidden;
             background-color: black;
+            color: #f8ffdd;
         }
 
         .container {
             width: 100vw;
             height: 100vh;
-        }
-
-        #leaderboard_today,
-        #leaderboard_total,
-        #task_today {
             position: absolute;
             top: 0;
-            left: calc((100vw - (100vh * 0.5625))/2);
-            height: 100vh;
-            width: calc(100vh * 0.5625);
-
-            transition: transform 300ms linear;
+            left: 0;
         }
 
-        #leaderboard_total {
-            left: calc((100vw - (100vh * 0.5625))/2 + 100vw);
-        }
-
-        #task_today {
-            left: calc(-100vw + (100vw - (100vh * 0.5625))/2);
+        .leaderboard_today,
+        .leaderboard_total,
+        .task_today {
+            position: absolute;
+            height: calc(100vh - 60px);
+            width: calc(100vw - 60px);
+            top: 30px;
         }
 
         .background-image {
@@ -58,61 +50,89 @@
         }
 
         .wrapper {
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            width: calc(100% - 60px);
-            height: calc(100% - 60px);
+            position: relative;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             clip-path: inset(0px 0px 0px 0px);
         }
 
-        .moveLeft {
-            transform: translateX(-100vw);
+        .wrapper>.content {
+            clip-path: inset(0px 0px 0px 0px);
         }
 
-        .moveLeft1 {
-            transform: translateX(-200vw);
+        .wrapper>.header {
+            height: 30px;
+            margin-bottom: 10px;
         }
 
-        .moveRight {
-            transform: translateX(100vw);
-        }
-
-        .moveRight1 {
-            transform: translateX(200vw);
+        .wrapper>div {
+            width: 100%;
         }
 
         .individual {
             position: relative;
             width: 100%;
-            height: 3%;
-            margin-bottom: 2%;
+            height: 20px;
+            margin-bottom: 7px;
             transform: translate3d(0px, 0px, 0px);
             font-family: 'Roboto', sans-serif;
-            font-size: 2vh;
+            font-size: 1vh;
         }
 
         .individual>* {
-            background-color: rgba(255, 255, 255, 0.3);
-            margin-left: 1%;
+            background-color: rgba(50, 30, 30, 0.8);
+            margin-left: 10px;
             display: inline-block;
-            width: 20%;
-            text-align: center;
-        }
-
-        #leaderboard_today>.individual>* {
-            width: 20%;
+            width: 25%;
+            text-align: left;
+            overflow-x: hidden;
+            white-space: nowrap;
+            padding-left: 2px;
         }
 
         .individual>*:first-child {
             margin-left: 0;
-            width: 13%;
-            text-align: left;
+            padding-left: 0;
+            text-align: center;
+            width: 6%;
         }
 
         .individual>*:nth-child(2) {
-            width: 44%;
-            text-align: left;
+            padding-left: 0;
+            text-align: center;
+            width: 9%;
+        }
+
+        .individual>*:nth-child(3) {
+            width: 29%;
+        }
+
+        .leaderboard_total>.wrapper>div>.individual>*:last-child,
+        .leaderboard_today>.wrapper>.header>.individual>*:last-child {
+            width: 51.75%;
+        }
+
+        .header>.individual {
+            height: 100%;
+            font-size: 30px;
+        }
+
+        .transition {
+            transition: left 300ms linear;
+        }
+
+        .middle {
+            left: 30px;
+        }
+
+        .left {
+            left: -100vw;
+        }
+
+        .right {
+            left: 100vw;
         }
 
         .move {
@@ -129,35 +149,53 @@
 
 <body>
     <div class="container">
-        <div id="leaderboard_today">
-            <img class="background-image" src="/images/eregalerij.jpg">
+        <img class="background-image" src="./images/possible-bg-2.jpg">
+        <div class="leaderboard_today transition middle">
             <div class="wrapper leaderboard">
+                <div class="header">
+                    <div class="individual">
+                        <span style="text-align: center;">rank</span><span style="text-align: center;">score</span><span style="text-align: center;">name</span><span style="text-align: center;">submitted parts</span>
+                    </div>
+                </div>
+                <div class="content"></div>
             </div>
         </div>
-        <div id="leaderboard_total">
+        <div class="leaderboard_total transition right">
             <div class="wrapper leaderboard">
+                <div class="header">
+                    <div class="individual">
+                        <span style="text-align: center;">rank</span><span style="text-align: center;">score</span><span style="text-align: center;">name</span><span style="text-align: center;">stars</span>
+                    </div>
+                </div>
+                <div class="content"></div>
             </div>
         </div>
-        <div id="task_today">
-            <img class="background-image" src="/images/club-events.jpg">
-            <div class="wrapper task">
-            </div>
+        <div class="task_today transition left">
+            <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
+            <div class="wrapper task"></div>
         </div>
     </div>
 </body>
 <script>
     /// insert child into parent
     /// `parent` - the HTML element to insert the child into
+    /// `rank` - integer indicating the rank of the person
     /// `child` - the element to insert (gotten from json request to AoC)
     /// `moving` - bool indicating if the children should be moving
     /// `today` - boolean for if it is individual for todays leaderboard
-    function insertIndividual(parent, child, moving, today) {
+    function insertIndividual(parent, rank, child, moving, today) {
+        if (typeof(child) !== 'object') return;
+
         let child_el = document.createElement("div");
         child_el.classList.add("individual");
+        let rank_el = document.createElement("span");
+        rank_el.textContent = rank.toString();
         let score = document.createElement("span");
         score.textContent = child.score.toString();
         let name = document.createElement("span");
-        name.textContent = child.name;
+        name.textContent = (child.name == null || child.name == undefined) ? "unknown" : child.name;
+
+        child_el.appendChild(rank_el);
         child_el.appendChild(score);
         child_el.appendChild(name);
         if (today) {
@@ -177,7 +215,7 @@
             // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
             child.stars.forEach((star) => {
                 // add all stars with their color
-                text += "<span color=\"#";
+                text += "<span style=\"color: #";
                 if (star === 0) {
                     text += "333333";
                 } else if (star === 1) {
@@ -185,13 +223,15 @@
                 } else if (star === 2) {
                     text += "ffff66";
                 }
-                text += ";\">*</span>";
+                text += ";\">★   </span>";
             });
-            start.textContext = text;
+            stars.innerHTML = text;
+            stars.style.textAlign = "center";
+
             child_el.appendChild(stars);
         }
         if (moving) {
-            child_el.classList.add("move");
+            if (parent.classList.contains("middle")) child_el.classList.add("move");
             child_el.addEventListener("animationiteration", cycleChildren);
         }
         parent.prepend(child_el);
@@ -203,13 +243,15 @@
     /// - `today` : if the children will be added to the today leaderboard this is true
     function render(selector, children, today) {
         let el = document.querySelector(selector);
+        let max_in_list = el.offsetHeight / 27.;
         // remove all children as we will be adding them again
         el.innerHTML = "";
         // adding children
-        children.reverse().forEach((child) => {
-            insertIndividual(el, child, children.length > 20, today);
-        });
-        if (children.length > 20) insertIndividual(el, children[0], true, today);
+        if (children.length > max_in_list) insertIndividual(el, 1, children[0], true, today);
+        for (let i = children.length - 1; i >= 0; i--) {
+            let child = children[i];
+            insertIndividual(el, i + 1, child, children.length > max_in_list, today);
+        }
     }
 
     function cycleChildren() {
@@ -217,317 +259,98 @@
         if (self.nextElementSibling) {
             self.innerHTML = self.nextElementSibling.innerHTML;
         } else {
-            let next = self.parentElement.firstElementChild.innerHTML;
             self.innerHTML = self.parentElement.firstElementChild.innerHTML;
         }
     }
 
-    var playState = 'animation-play-state';
-    var running = true;
-    var index = 0;
+    let step = 0;
 
-    function repeatOften() {
-        switch (index) {
-            case 0:
-                $('#leaderboard_today').toggleClass('moveLeft');
-                $('#leaderboard_total').toggleClass('moveLeft');
-                break;
-            case 1:
-                $('#task_today').toggleClass('moveRight');
-                $('#leaderboard_total').toggleClass('moveLeft');
-                break;
-            case 2:
-                $('#task_today').toggleClass('moveRight');
-                $('#task_today').toggleClass('moveRight1');
-                $('#leaderboard_today').toggleClass('moveLeft');
-                break;
-            case 3:
-                $('#leaderboard_total').toggleClass('moveLeft');
-                $('#leaderboard_today').toggleClass('moveLeft');
-                break;
-            case 4:
-                $('#leaderboard_total').toggleClass('moveLeft');
-                $('#leaderboard_total').toggleClass('moveLeft1');
-                $('#task_today').toggleClass('moveRight1');
-                $('#task_today').toggleClass('moveRight');
-                break;
-            case 5:
-                $('#leaderboard_today').toggleClass('moveLeft');
-                $('#task_today').toggleClass('moveRight1');
-                $('#task_today').toggleClass('moveRight');
-                break;
-            case 6:
-                $('#leaderboard_today').toggleClass('moveRight');
-                $('#leaderboard_total').toggleClass('moveLeft');
-                $('#leaderboard_total').toggleClass('moveLeft1');
-                break;
-            case 7:
-                $('#leaderboard_total').toggleClass('moveLeft');
-                $('#leaderboard_total').toggleClass('moveLeft1');
-                $('#task_today').toggleClass('moveRight1');
-                $('#task_today').toggleClass('moveRight');
-                break;
-            case 8:
-                $('#leaderboard_today').toggleClass('moveRight');
-                $('#task_today').toggleClass('moveRight');
-                break;
-            case 9:
-                $('#leaderboard_today').toggleClass('moveRight');
-                $('#leaderboard_total').toggleClass('moveLeft');
-                $('#leaderboard_total').toggleClass('moveLeft1');
-                break;
-            case 10:
-                $('#task_today').toggleClass('moveRight');
-                $('#leaderboard_total').toggleClass('moveLeft');
-                break;
-            case 11:
-                $('#task_today').toggleClass('moveRight');
-                $('#leaderboard_today').toggleClass('moveRight');
-                break;
+    function move_left(el) {
+        el.classList.add("left");
+        el.classList.remove("middle", "right");
+        if (el.children[0].children.length > 0) {
+            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
+                el.children[0].lastElementChild.children[i].classList.remove("move");
+            }
         }
-        index = (index + 1) % 12;
-
-        setTimeout(function() {
-            requestAnimationFrame(repeatOften);
-        }, 30000)
-    }
-    setTimeout(function() {
-        requestAnimationFrame(repeatOften);
-    }, 30000)
-
-
-    function get_data() {
-        const tmp_data = [{
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            }, {
-                name: "Thom Breugelmans",
-                score: 420,
-                star1: "00:15:42",
-                star2: "00:69:00",
-            },
-            {
-                name: "Lars van Tol",
-                score: 69,
-                star1: "00:45:14",
-                star2: "01:05:00",
-            },
-            {
-                name: "Kasper Vaessen",
-                score: 43,
-                star1: "01:42:69",
-            },
-        ]
-
-        render("#leaderboard_today > .wrapper", tmp_data, true);
     }
 
-    get_data();
+    function move_middle(el) {
+        el.classList.add("middle");
+	el.classList.remove("right", "left");
+        if (el.children[0].children.length > 0 && el.children[0].offsetHeight / 27. < el.children[0].lastElementChild.children.length) {
+            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
+                el.children[0].lastElementChild.children[i].classList.add("move");
+            }
+        }
+    }
+
+    function move_right(el) {
+        el.classList.add("right");
+        el.classList.remove("middle");
+        if (el.children[0].children.length > 0) {
+            for (let i = 0; i < el.children[0].lastElementChild.children.length; i++) {
+                el.children[0].lastElementChild.children[i].classList.remove("move");
+            }
+        }
+    }
+
+    function swap(el) {
+        let from = "left";
+        let to = "right";
+        if (el.classList.contains(to)) {
+            from = "right";
+            to = "left";
+        }
+        el.classList.remove("transition")
+        setTimeout(() => {
+            el.classList.remove(from);
+            el.classList.add(to);
+            setTimeout(() => {
+                el.classList.add("transition")
+            }, 100);
+        }, 100);
+    }
+
+    function move(el, offset) {
+        let cur_step = (step + offset) % 6
+        if (cur_step == 0) {
+            move_left(el);
+        } else if (cur_step == 1) {
+            swap(el);
+        } else if (cur_step == 2) {
+            move_middle(el);
+        } else if (cur_step == 3) {
+            move_right(el);
+        } else if (cur_step == 4) {
+            swap(el);
+        } else if (cur_step == 5) {
+            move_middle(el);
+        }
+    }
+
+    function transitions() {
+        let l = document.querySelectorAll(".container > div")[2];
+        let m = document.querySelectorAll(".container > div")[0];
+        let r = document.querySelectorAll(".container > div")[1];
+
+        move(l, 1);
+        move(m, 0);
+        move(r, 2);
+        step = (step + 1) % 6;
+        setTimeout(transitions, 30000);
+    }
+    setTimeout(transitions, 30000);
+
+    async function get_data() {
+        let response = await fetch("http://localhost:5000/");
+        let leaderboards = await response.json();
+
+        render(".leaderboard_today > .wrapper > .content", leaderboards.today, true);
+        render(".leaderboard_total > .wrapper > .content", leaderboards.total, false);
+    }
+
+    //get_data();
 </script>
 
 </html>
