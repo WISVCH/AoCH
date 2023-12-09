@@ -13,12 +13,17 @@ app = Flask(__name__)
 CORS(app)
 
 data = {}
-assignment = ""
-last_pull = datetime.now() - timedelta(hours=1)
+# the two below variables are used to keep track of when was last pulled, so we do not overload the Advent of Code servers
+# as per the specifications provided in [the wiki](https://www.reddit.com/r/adventofcode/wiki/faqs/automation)
+last_pull = datetime.now() - timedelta(hours=6)
+assignment = {"puzzle": "", "last_pulled": last_pull}
 current_working_directory = os.getcwd()
 
+# required per [community wiki](https://www.reddit.com/r/adventofcode/wiki/faqs/automation)
+user_agent = "https://github.com/larsvantol/AoCH_Leaderboard_Frontend, t.l.breugelmans@student.tudelft.nl"
 session = os.environ.get("session")
 cookie = f"session={session}"
+headers = {"cookie": cookie, "User-Agent": user_agent}
 leaderboard_id = os.environ.get("leaderboard_id")
 
 authors = {
@@ -74,20 +79,22 @@ def get_data(today: tuple[str, str, str]):
 def get_day_assignment(today: tuple[str, str, str]):
     """
     Pulls the data from Advent of Code and returns.
-    If the data has been pulled in the last 15 minutes, it will return the
-    previously pulled data.
+    This method will make a request to the advent of code website
+    only once every first 25 days of December.
     """
     global assignment
 
     this_day, this_month, this_year = today
 
-    if assignment != "":
-        return assignment
-    url = "https://adventofcode.com/" + this_year + "/day/" + this_day
-    # headers = {"cookie": cookie}
-    response = requests.get(url, timeout=5)
-    assignment = response.text
-    return assignment
+    # only request the puzzle input if we do not have a puzzle already and the day has changed
+    if assignment['puzzle'] != "" and this_day == assignment['last_pulled'].day and this_month == assignment['last_pulled'].month and this_year == assignment['last_pulled'].year:
+        return assignment['puzzle']
+    
+    url = f"https://adventofcode.com/{this_year}/day/{this_day}"
+    response = requests.get(url, headers=headers, timeout=5)
+    assignment['puzzle'] = response.text
+    assignment['last_pulled'] = datetime(year=this_year, month=this_month, day=this_day)
+    return response.text
 
 def filter_non_active_members(members):
     """

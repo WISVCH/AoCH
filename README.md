@@ -4,6 +4,15 @@
 
 This project shows the current statistics and leaderboard of CH members for the AoC.
 
+## Guidelines
+
+This script follows the guidelines stated by [Advent of Code](https://www.reddit.com/r/adventofcode/wiki/faqs/automation), namely:
+- it includes the emails of the maintainers and a link to the current repo in the User-Agent header for all outbound requests;
+- it throttles the requests made to the website by only requesting (private) leaderboard updates every 15 minutes (`L55: get_data()`);
+- the puzzle for each day is requested only once and 'cached' runtime only, so restarting the server removes the 'cache' (`L79: get_day_assignment()`).
+
+Do not misuse this leaderboard we created and if you decide to fork this repository, please update the User-Agent to your own email and repository.
+
 ## Installation
 
 To run the project, follow these steps:
