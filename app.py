@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import requests
 from flask import Flask, render_template, request, jsonify
 from flask_cors import CORS
@@ -6,12 +6,50 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+data = {}
+last_pull = datetime.now() - timedelta(hours=1)
+
+# Get current day
+current_time = datetime.now() - timedelta(hours=6)
+today = current_time.strftime("%-d")
+if int(today) > 25:
+    today = "25"
+this_month = current_time.strftime("%-m")
+this_year = current_time.strftime("%Y")
+if this_month != "12":
+    today = "25"
+    this_year = str(int(this_year) - 1)
+
 def get_data():
-    url = "https://adventofcode.com/2023/leaderboard/private/view/954860.json"
+    global today
+    global this_month
+    global this_year
+    global data
+    global last_pull
+
+    now = datetime.now()
+    if (now - last_pull) < timedelta(minutes=15):
+        return data
+
+    app.logger.info("Pulling new data from Advent of Code!")
+    
+    # Get current day
+    current_time = datetime.now() - timedelta(hours=6)
+    today = current_time.strftime("%-d")
+    if int(today) > 25:
+        today = "25"
+    this_month = current_time.strftime("%-m")
+    this_year = current_time.strftime("%Y")
+    if this_month != "12":
+        today = "25"
+        this_year = str(int(this_year) - 1)
+
+    url = "https://adventofcode.com/"+this_year+"/leaderboard/private/view/954860.json"
     cookie = "session=53616c7465645f5f1c43c14b203359c399a1c7373e63dd4884a54869a787103f3b76a8df0dbcfcab49920c81cd573200b657ea0016db75fb023f35c8ed37264e"
     headers = {"cookie": cookie}
     response = requests.get(url, headers=headers, timeout=5)
     data = response.json()
+    last_pull = now
     return data
 
 
@@ -26,18 +64,11 @@ def filter_non_active_members(data):
 def return_today_data(members, total_members):
     today_data = []
 
-
-    # Get current day
-    current_time = datetime.now()
-    today = str(
-        int(current_time.strftime("%d"))
-    )  # We weten dat dit gebeund is, maar Robert blijft zeuren of het al af is
-
     for key, value in members.items():
         if today in value["completion_day_level"]:
             # Today +5 hours
             time_started = datetime.now().strptime(
-                "2023-12-" + today + " 05:00:00", "%Y-%m-%d %H:%M:%S"
+                this_year + "-12-" + today + " 06:00:00", "%Y-%m-%d %H:%M:%S"
             )
 
             person = {
