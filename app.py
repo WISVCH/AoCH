@@ -5,6 +5,9 @@ from datetime import datetime, timedelta
 import requests
 from flask import Flask, render_template, render_template_string
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
@@ -14,9 +17,9 @@ assignment = ""
 last_pull = datetime.now() - timedelta(hours=1)
 current_working_directory = os.getcwd()
 
-session = "53616c7465645f5f1c43c14b203359c399a1c7373e63dd4884a54869a787103f3b76a8df0dbcfcab49920c81cd573200b657ea0016db75fb023f35c8ed37264e"
+session = os.environ.get("session")
 cookie = f"session={session}"
-leaderboard_id = "954860"
+leaderboard_id = os.environ.get("leaderboard_id")
 
 authors = {
     "larsvantol": "Lars van Tol 🎅",
