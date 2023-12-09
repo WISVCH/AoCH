@@ -18,7 +18,7 @@ session = "53616c7465645f5f1c43c14b203359c399a1c7373e63dd4884a54869a787103f3b76a
 cookie = f"session={session}"
 leaderboard_id = "954860"
 
-special_names = {
+authors = {
     "larsvantol": "Lars van Tol 🎅",
     "KasperVaessen": "Kasper Vaessen 🎄",
     "Thom Breugelmans": "Thom Breugelmans 🎁",
@@ -94,8 +94,8 @@ def filter_non_active_members(members):
     active_members = {}
 
     for key, value in members.items():
-        if value["name"] in special_names:
-            value["name"] = special_names[value["name"]]
+        if value["name"] in authors:
+            value["name"] = authors[value["name"]]
         if value["local_score"] > 0:
             active_members[key] = value
 
@@ -129,9 +129,16 @@ def return_day_data(members, total_members, today):
                         )
                         - time_started
                     )
+                    star_time_string = ""
+                    if star_time.days > 0:
+                        star_time_string += f"{star_time.days} days "
+                    if star_time.seconds // 3600 > 0:
+                        star_time_string += f"{star_time.seconds//3600} hours "
+                    if star_time.seconds // 60 % 60 > 0:
+                        star_time_string += f"{star_time.seconds//60%60} minutes"
                     person[
                         "star" + star
-                    ] = f"{star_time.days} days {star_time.seconds//3600} hours {star_time.seconds//60%60} minutes"
+                    ] = star_time_string
 
                     person["star_index" + star] = value["completion_day_level"][this_day][star][
                         "star_index"
