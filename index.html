@@ -271,7 +271,7 @@
     /// - `today` : if the children will be added to the today leaderboard this is true
     function render(selector, children, today) {
         let el = document.querySelector(selector);
-        let max_in_list = el.offsetHeight / 27.;
+        let max_in_list = el.parentNode.offsetHeight / 27.;
         // remove all children as we will be adding them again
         el.innerHTML = "";
         // adding children
