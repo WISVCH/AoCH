@@ -27,7 +27,8 @@
 	overflow-x: hidden;
         background-color: black;
         color: #f8ffdd;
-        font-family: "Roboto", sans-serif;
+	font-family: "Roboto", sans-serif;
+	font-size: 1.5vh;
       }
 
       .container {
@@ -41,35 +42,35 @@
       h1 {
         position: absolute;
         width: 60%;
-        height: 80px;
+        height: 4.7vh;
         left: 20%;
-        top: 30px;
+        top: 0.5vh;
         margin: 0;
-        padding-top: 20px;
+        padding-top: 0.3vh;
         padding-bottom: 0;
         background-color: rgba(50, 30, 30, 0.8);
         text-align: center;
-        font-size: 64px;
+        font-size: 4.5vh;
       }
       h2 {
         position: absolute;
         width: 50%;
-        height: 40px;
+        height: 3vh;
         left: 25%;
         top: 0;
         margin: 0;
         background-color: rgba(50, 30, 30, 0.8);
         text-align: center;
-        font-size: 35px;
+        font-size: 2.5vh;
       }
 
       .leaderboard_today,
       .leaderboard_total,
       .task_today {
         position: absolute;
-        height: calc(100vh - 160px);
-        width: calc(100vw - 60px);
-        top: 130px;
+        height: 94vh;
+        width: 95vw;
+        top: 5.5vh;
       }
 
       .background-image {
@@ -80,10 +81,10 @@
 
       .wrapper {
         position: relative;
-        top: 60px;
+        top: 3.3vh;
         left: 0;
-        width: 100%;
-        height: calc(100% - 60px);
+        width: 95vw;
+        height: calc(100% - 5.8vh);
         clip-path: inset(0px 0px 0px 0px);
       }
 
@@ -92,8 +93,8 @@
       }
 
       .wrapper > .header {
-        height: 30px;
-        margin-bottom: 10px;
+        height: 2vh;
+        margin-bottom: 0.7vh;
       }
 
       .wrapper > div {
@@ -103,15 +104,15 @@
       .individual {
         position: relative;
         width: 100%;
-        height: 20px;
-        margin-bottom: 7px;
+        height: 2vh;
+        margin-bottom: 0.1vh;
         transform: translate3d(0px, 0px, 0px);
-        font-size: 1vh;
+        font-size: 1.5vh;
       }
 
       .individual > * {
         background-color: rgba(50, 30, 30, 0.8);
-        margin-left: 10px;
+        margin-left: 0.5vw;
         display: inline-block;
         width: 25%;
         text-align: left;
@@ -124,32 +125,44 @@
         margin-left: 0;
         padding-left: 0;
         text-align: center;
-        width: 6%;
+        width: 7%;
       }
 
       .individual > *:nth-child(2) {
         padding-left: 0;
         text-align: center;
-        width: 9%;
+        width: 10%;
       }
 
       .individual > *:nth-child(3) {
-        width: 29%;
+        width: 30%;
       }
 
       .leaderboard_total > .wrapper > div > .individual > *:last-child,
       .leaderboard_today > .wrapper > .header > .individual > *:last-child {
-        width: 51.75%;
+        width: 51%;
       }
 
       .task_today > .wrapper > .content {
         background-color: rgba(0, 0, 0, 0.418);
-        padding: 10px;
+	padding: 10px;
+	padding-top: 2.5vh;
+	font-size: 1vh;
+	
+      }
+      .task_today > .wrapper > .content > h2 {
+	  font-size: 1.7vh;
+	  background: none;
+	  height: 2.2vh;
+      }
+
+      .task_today > .wrapper > .content > a {
+	  color: cornflowerblue;
       }
 
       .header > .individual {
         height: 100%;
-        font-size: 30px;
+        font-size: 1.7vh;
       }
 
       .transition {
@@ -157,7 +170,7 @@
       }
 
       .middle {
-        left: 30px;
+        left: 2.5vw;
       }
 
       .left {
@@ -211,7 +224,7 @@
           <div class="content"></div>
         </div>
       </div>
-      <div class="task_today transition left">
+      <div class="task_today transition nomove right">
         <h2>Todays Puzzle</h2>
         <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
         <div class="wrapper task">
@@ -260,7 +273,7 @@
         // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
         child.stars.forEach((star) => {
           // add all stars with their color
-          text += '<span style="color: #';
+	    text += '<span style="font-size: 1.3vh; color: #';
           if (star === 0) {
             text += "333333";
           } else if (star === 1) {
@@ -288,7 +301,8 @@
     /// - `today` : if the children will be added to the today leaderboard this is true
     function render(selector, children, today) {
       let el = document.querySelector(selector);
-      let max_in_list = el.parentNode.offsetHeight / 27;
+      let max_in_list = (el.parentNode.offsetHeight / screen.height) * 100 / 2.2;
+	console.log(max_in_list);
       // remove all children as we will be adding them again
       el.innerHTML = "";
       // adding children
@@ -336,7 +350,7 @@
       el.classList.remove("right", "left");
       if (
         el.children[1].children.length > 0 &&
-        el.children[1].offsetHeight / 27 <
+	(el.children[1].offsetHeight / screen.height) * 100 / 2.2 <
           el.children[1].lastElementChild.children.length
       ) {
         for (
@@ -344,7 +358,7 @@
           i < el.children[1].lastElementChild.children.length;
           i++
         ) {
-          el.children[1].lastElementChild.children[i].classList.add("move");
+	    if (!el.classList.contains("nomove")) el.children[1].lastElementChild.children[i].classList.add("move");
         }
       }
     }
@@ -402,13 +416,12 @@
       let m = document.querySelectorAll(".container > div")[0];
       let r = document.querySelectorAll(".container > div")[1];
 
-      move(l, 1);
+      move(l, 4);
       move(m, 0);
       move(r, 2);
       step = (step + 1) % 6;
-      setTimeout(transitions, 30000);
     }
-    setTimeout(transitions, 30000);
+    setInterval(transitions, 30000);
 
     async function get_data() {
       let response = await fetch("http://localhost:5000/data");
