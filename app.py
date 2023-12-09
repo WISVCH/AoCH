@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
+
 import requests
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, jsonify, render_template, request
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -11,14 +12,16 @@ last_pull = datetime.now() - timedelta(hours=1)
 
 # Get current day
 current_time = datetime.now() - timedelta(hours=6)
-today = current_time.strftime("%-d")
+today = "{dt.day}".format(dt=current_time)
+print(today)
 if int(today) > 25:
     today = "25"
-this_month = current_time.strftime("%-m")
-this_year = current_time.strftime("%Y")
+this_month = "{dt.month}".format(dt=current_time)
+this_year = "{dt.year}".format(dt=current_time)
 if this_month != "12":
     today = "25"
     this_year = str(int(this_year) - 1)
+
 
 def get_data():
     global today
@@ -32,7 +35,7 @@ def get_data():
         return data
 
     app.logger.info("Pulling new data from Advent of Code!")
-    
+
     # Get current day
     current_time = datetime.now() - timedelta(hours=6)
     today = current_time.strftime("%-d")
@@ -44,7 +47,7 @@ def get_data():
         today = "25"
         this_year = str(int(this_year) - 1)
 
-    url = "https://adventofcode.com/"+this_year+"/leaderboard/private/view/954860.json"
+    url = "https://adventofcode.com/" + this_year + "/leaderboard/private/view/954860.json"
     cookie = "session=53616c7465645f5f1c43c14b203359c399a1c7373e63dd4884a54869a787103f3b76a8df0dbcfcab49920c81cd573200b657ea0016db75fb023f35c8ed37264e"
     headers = {"cookie": cookie}
     response = requests.get(url, headers=headers, timeout=5)
@@ -88,7 +91,9 @@ def return_today_data(members, total_members):
                         "star" + star
                     ] = f"{star_time.days} days {star_time.seconds//3600} hours {star_time.seconds//60%60} minutes"
 
-                    person["star_index" + star] = value["completion_day_level"][today][star]["star_index"]
+                    person["star_index" + star] = value["completion_day_level"][today][star][
+                        "star_index"
+                    ]
 
             today_data.append(person)
     today_data.sort(key=lambda x: x["star_index1"])
@@ -105,17 +110,14 @@ def return_today_data(members, total_members):
         if "star_index2" in person:
             person.pop("star_index2")
     today_data.sort(key=lambda x: x["score"], reverse=True)
-        
+
     return today_data
+
 
 def return_global_data(members):
     global_data = []
     for key, value in members.items():
-        person = {
-            "name": value["name"],
-            "score": value["local_score"],
-            "stars": []
-        }
+        person = {"name": value["name"], "score": value["local_score"], "stars": []}
         for int in range(1, 26):
             if str(int) in value["completion_day_level"]:
                 if "2" in value["completion_day_level"][str(int)]:
@@ -124,22 +126,19 @@ def return_global_data(members):
                     person["stars"].append(1)
             else:
                 person["stars"].append(0)
-        
 
         global_data.append(person)
     global_data.sort(key=lambda x: x["score"], reverse=True)
     return global_data
-    
-@app.route('/')
+
+
+@app.route("/")
 def return_data():
     data = get_data()
     active_members = filter_non_active_members(data)
-    today_data = return_today_data(active_members, len(data['members']))
+    today_data = return_today_data(active_members, len(data["members"]))
     total_data = return_global_data(active_members)
 
-    data = {
-        "total": total_data,
-        "today": today_data
-    }
-    
+    data = {"total": total_data, "today": today_data}
+
     return data
