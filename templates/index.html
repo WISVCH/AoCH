@@ -208,7 +208,9 @@
       <div class="task_today transition left">
         <h2>Todays Puzzle</h2>
         <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
-        <div class="wrapper task"></div>
+        <div class="wrapper task">
+          <div class="content"></div>
+        </div>
       </div>
     </div>
   </body>
@@ -416,6 +418,8 @@
         leaderboards.total,
         false
       );
+      document.querySelector(".task_today > .wrapper > .content").innerHTML =
+        leaderboards.assignment;
     }
 
     get_data();
