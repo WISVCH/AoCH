@@ -1,210 +1,218 @@
 <!DOCTYPE html>
 <html lang="nl">
-
-<head>
+  <head>
     <title>AoCH Leaderboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        @keyframes elementMove {
-            0% {
-                transform: translateY(0px)
-            }
-
-            94% {
-                transform: translateY(0px)
-            }
-
-            100% {
-                transform: translateY(-105%)
-            }
+      @keyframes elementMove {
+        0% {
+          transform: translateY(0px);
         }
 
-        body {
-            margin: 0;
-            overflow-y: hidden;
-            background-color: black;
-            color: #f8ffdd;
-            font-family: 'Roboto', sans-serif;
+        94% {
+          transform: translateY(0px);
         }
 
-        .container {
-            width: 100vw;
-            height: 100vh;
-            position: absolute;
-            top: 0;
-            left: 0;
-	}
-
-	h1 {
-	    position: absolute;
-	    width: 60%;
-	    height: 80px;
-	    left: 20%;
-	    top: 30px;
-	    margin: 0;
-	    padding-top: 20px;
-	    padding-bottom: 0;
-	    background-color: rgba(50, 30, 30, 0.8);
-	    text-align: center;
-	    font-size: 64px;
-	}
-	h2 {
-	    position: absolute;
-	    width: 50%;
-	    height: 40px;
-	    left: 25%;
-	    top: 0;
-	    margin: 0;
-	    background-color: rgba(50, 30, 30, 0.8);
-	    text-align: center;
-	    font-size: 35px;
-	}
-
-        .leaderboard_today,
-        .leaderboard_total,
-        .task_today {
-            position: absolute;
-            height: calc(100vh - 160px);
-            width: calc(100vw - 60px);
-            top: 130px;
+        100% {
+          transform: translateY(-105%);
         }
+      }
 
-        .background-image {
-            position: absolute;
-            height: 100%;
-            width: 100%;
-        }
+      body {
+        margin: 0;
+        overflow-y: hidden;
+        background-color: black;
+        color: #f8ffdd;
+        font-family: "Roboto", sans-serif;
+      }
 
-        .wrapper {
-            position: relative;
-            top: 60px;
-            left: 0;
-            width: 100%;
-            height: calc(100% - 60px);
-            clip-path: inset(0px 0px 0px 0px);
-        }
+      .container {
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
 
-        .wrapper>.content {
-            clip-path: inset(0px 0px 0px 0px);
-        }
+      h1 {
+        position: absolute;
+        width: 60%;
+        height: 80px;
+        left: 20%;
+        top: 30px;
+        margin: 0;
+        padding-top: 20px;
+        padding-bottom: 0;
+        background-color: rgba(50, 30, 30, 0.8);
+        text-align: center;
+        font-size: 64px;
+      }
+      h2 {
+        position: absolute;
+        width: 50%;
+        height: 40px;
+        left: 25%;
+        top: 0;
+        margin: 0;
+        background-color: rgba(50, 30, 30, 0.8);
+        text-align: center;
+        font-size: 35px;
+      }
 
-        .wrapper>.header {
-            height: 30px;
-            margin-bottom: 10px;
-        }
+      .leaderboard_today,
+      .leaderboard_total,
+      .task_today {
+        position: absolute;
+        height: calc(100vh - 160px);
+        width: calc(100vw - 60px);
+        top: 130px;
+      }
 
-        .wrapper>div {
-            width: 100%;
-        }
+      .background-image {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+      }
 
-        .individual {
-            position: relative;
-            width: 100%;
-            height: 20px;
-            margin-bottom: 7px;
-            transform: translate3d(0px, 0px, 0px);
-            font-size: 1vh;
-        }
+      .wrapper {
+        position: relative;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 60px);
+        clip-path: inset(0px 0px 0px 0px);
+      }
 
-        .individual>* {
-            background-color: rgba(50, 30, 30, 0.8);
-            margin-left: 10px;
-            display: inline-block;
-            width: 25%;
-            text-align: left;
-            overflow-x: hidden;
-            white-space: nowrap;
-            padding-left: 2px;
-        }
+      .wrapper > .content {
+        clip-path: inset(0px 0px 0px 0px);
+      }
 
-        .individual>*:first-child {
-            margin-left: 0;
-            padding-left: 0;
-            text-align: center;
-            width: 6%;
-        }
+      .wrapper > .header {
+        height: 30px;
+        margin-bottom: 10px;
+      }
 
-        .individual>*:nth-child(2) {
-            padding-left: 0;
-            text-align: center;
-            width: 9%;
-        }
+      .wrapper > div {
+        width: 100%;
+      }
 
-        .individual>*:nth-child(3) {
-            width: 29%;
-        }
+      .individual {
+        position: relative;
+        width: 100%;
+        height: 20px;
+        margin-bottom: 7px;
+        transform: translate3d(0px, 0px, 0px);
+        font-size: 1vh;
+      }
 
-        .leaderboard_total>.wrapper>div>.individual>*:last-child,
-        .leaderboard_today>.wrapper>.header>.individual>*:last-child {
-            width: 51.75%;
-        }
+      .individual > * {
+        background-color: rgba(50, 30, 30, 0.8);
+        margin-left: 10px;
+        display: inline-block;
+        width: 25%;
+        text-align: left;
+        overflow-x: hidden;
+        white-space: nowrap;
+        padding-left: 2px;
+      }
 
-        .header>.individual {
-            height: 100%;
-            font-size: 30px;
-        }
+      .individual > *:first-child {
+        margin-left: 0;
+        padding-left: 0;
+        text-align: center;
+        width: 6%;
+      }
 
-        .transition {
-            transition: left 300ms linear;
-        }
+      .individual > *:nth-child(2) {
+        padding-left: 0;
+        text-align: center;
+        width: 9%;
+      }
 
-        .middle {
-            left: 30px;
-        }
+      .individual > *:nth-child(3) {
+        width: 29%;
+      }
 
-        .left {
-            left: -100vw;
-        }
+      .leaderboard_total > .wrapper > div > .individual > *:last-child,
+      .leaderboard_today > .wrapper > .header > .individual > *:last-child {
+        width: 51.75%;
+      }
 
-        .right {
-            left: 100vw;
-        }
+      .header > .individual {
+        height: 100%;
+        font-size: 30px;
+      }
 
-        .move {
-            animation-name: elementMove;
-            animation-timing-function: linear;
-            animation-duration: 3s;
-            animation-iteration-count: infinite;
-            animation-direction: normal;
-            animation-delay: 0.5s;
-        }
+      .transition {
+        transition: left 300ms linear;
+      }
+
+      .middle {
+        left: 30px;
+      }
+
+      .left {
+        left: -100vw;
+      }
+
+      .right {
+        left: 100vw;
+      }
+
+      .move {
+        animation-name: elementMove;
+        animation-timing-function: linear;
+        animation-duration: 3s;
+        animation-iteration-count: infinite;
+        animation-direction: normal;
+        animation-delay: 0.5s;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="container">
-      <img class="background-image" src="./images/possible-bg-2.jpg">
+      <img class="background-image" src="/static/images/background.jpg" />
       <h1>Advent of Code</h1>
       <div class="leaderboard_today transition middle">
-	<h2>Todays Leaderboard</h2>
-            <div class="wrapper leaderboard">
-                <div class="header">
-                    <div class="individual">
-                        <span style="text-align: center;">rank</span><span style="text-align: center;">score</span><span style="text-align: center;">name</span><span style="text-align: center;">submitted parts</span>
-                    </div>
-                </div>
-                <div class="content"></div>
+        <h2>Todays Leaderboard</h2>
+        <div class="wrapper leaderboard">
+          <div class="header">
+            <div class="individual">
+              <span style="text-align: center">rank</span
+              ><span style="text-align: center">score</span
+              ><span style="text-align: center">name</span
+              ><span style="text-align: center">submitted parts</span>
             </div>
+          </div>
+          <div class="content"></div>
         </div>
+      </div>
       <div class="leaderboard_total transition right">
-	<h2>December Leaderboard</h2>
-            <div class="wrapper leaderboard">
-                <div class="header">
-                    <div class="individual">
-                        <span style="text-align: center;">rank</span><span style="text-align: center;">score</span><span style="text-align: center;">name</span><span style="text-align: center;">stars</span>
-                    </div>
-                </div>
-                <div class="content"></div>
+        <h2>December Leaderboard</h2>
+        <div class="wrapper leaderboard">
+          <div class="header">
+            <div class="individual">
+              <span style="text-align: center">rank</span
+              ><span style="text-align: center">score</span
+              ><span style="text-align: center">name</span
+              ><span style="text-align: center">stars</span>
             </div>
+          </div>
+          <div class="content"></div>
         </div>
+      </div>
       <div class="task_today transition left">
-	<h2>Todays Puzzle</h2>
-            <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
-            <div class="wrapper task"></div>
-        </div>
+        <h2>Todays Puzzle</h2>
+        <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
+        <div class="wrapper task"></div>
+      </div>
     </div>
-</body>
-<script>
+  </body>
+  <script>
     /// insert child into parent
     /// `parent` - the HTML element to insert the child into
     /// `rank` - integer indicating the rank of the person
@@ -212,57 +220,58 @@
     /// `moving` - bool indicating if the children should be moving
     /// `today` - boolean for if it is individual for todays leaderboard
     function insertIndividual(parent, rank, child, moving, today) {
-        if (typeof(child) !== 'object') return;
+      if (typeof child !== "object") return;
 
-        let child_el = document.createElement("div");
-        child_el.classList.add("individual");
-        let rank_el = document.createElement("span");
-        rank_el.textContent = rank.toString();
-        let score = document.createElement("span");
-        score.textContent = child.score.toString();
-        let name = document.createElement("span");
-        name.textContent = (child.name == null || child.name == undefined) ? "unknown" : child.name;
+      let child_el = document.createElement("div");
+      child_el.classList.add("individual");
+      let rank_el = document.createElement("span");
+      rank_el.textContent = rank.toString();
+      let score = document.createElement("span");
+      score.textContent = child.score.toString();
+      let name = document.createElement("span");
+      name.textContent =
+        child.name == null || child.name == undefined ? "unknown" : child.name;
 
-        child_el.appendChild(rank_el);
-        child_el.appendChild(score);
-        child_el.appendChild(name);
-        if (today) {
-            // element gets added to today leaderboard, thus contains timestamps when it has been handed in
-            let star1 = document.createElement("span");
-            let star2 = document.createElement("span");
+      child_el.appendChild(rank_el);
+      child_el.appendChild(score);
+      child_el.appendChild(name);
+      if (today) {
+        // element gets added to today leaderboard, thus contains timestamps when it has been handed in
+        let star1 = document.createElement("span");
+        let star2 = document.createElement("span");
 
-            star1.textContent = child.star1 ? child.star1 : "-";
-            star2.textContent = child.star2 ? child.star2 : "-";
+        star1.textContent = child.star1 ? child.star1 : "-";
+        star2.textContent = child.star2 ? child.star2 : "-";
 
-            child_el.appendChild(star1);
-            child_el.appendChild(star2);
-        } else {
-            // the element gets added to the total leaderboard
-            let stars = document.createElement("span");
-            let text = "";
-            // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
-            child.stars.forEach((star) => {
-                // add all stars with their color
-                text += "<span style=\"color: #";
-                if (star === 0) {
-                    text += "333333";
-                } else if (star === 1) {
-                    text += "9999cc";
-                } else if (star === 2) {
-                    text += "ffff66";
-                }
-                text += ";\">★   </span>";
-            });
-            stars.innerHTML = text;
-            stars.style.textAlign = "center";
+        child_el.appendChild(star1);
+        child_el.appendChild(star2);
+      } else {
+        // the element gets added to the total leaderboard
+        let stars = document.createElement("span");
+        let text = "";
+        // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
+        child.stars.forEach((star) => {
+          // add all stars with their color
+          text += '<span style="color: #';
+          if (star === 0) {
+            text += "333333";
+          } else if (star === 1) {
+            text += "9999cc";
+          } else if (star === 2) {
+            text += "ffff66";
+          }
+          text += ';">★   </span>';
+        });
+        stars.innerHTML = text;
+        stars.style.textAlign = "center";
 
-            child_el.appendChild(stars);
-        }
-        if (moving) {
-            if (parent.classList.contains("middle")) child_el.classList.add("move");
-            child_el.addEventListener("animationiteration", cycleChildren);
-        }
-        parent.prepend(child_el);
+        child_el.appendChild(stars);
+      }
+      if (moving) {
+        if (parent.classList.contains("middle")) child_el.classList.add("move");
+        child_el.addEventListener("animationiteration", cycleChildren);
+      }
+      parent.prepend(child_el);
     }
 
     /// This function is callped to input leaderboard statistics in a certain wrapper
@@ -270,115 +279,145 @@
     /// - `children` : this field will contain all children that will be added to the parent (it should be an array)
     /// - `today` : if the children will be added to the today leaderboard this is true
     function render(selector, children, today) {
-        let el = document.querySelector(selector);
-        let max_in_list = el.parentNode.offsetHeight / 27.;
-        // remove all children as we will be adding them again
-        el.innerHTML = "";
-        // adding children
-        if (children.length > max_in_list) insertIndividual(el, 1, children[0], true, today);
-        for (let i = children.length - 1; i >= 0; i--) {
-            let child = children[i];
-            insertIndividual(el, i + 1, child, children.length > max_in_list, today);
-        }
+      let el = document.querySelector(selector);
+      let max_in_list = el.parentNode.offsetHeight / 27;
+      // remove all children as we will be adding them again
+      el.innerHTML = "";
+      // adding children
+      if (children.length > max_in_list)
+        insertIndividual(el, 1, children[0], true, today);
+      for (let i = children.length - 1; i >= 0; i--) {
+        let child = children[i];
+        insertIndividual(
+          el,
+          i + 1,
+          child,
+          children.length > max_in_list,
+          today
+        );
+      }
     }
 
     function cycleChildren() {
-        let self = this;
-        if (self.nextElementSibling) {
-            self.innerHTML = self.nextElementSibling.innerHTML;
-        } else {
-            self.innerHTML = self.parentElement.firstElementChild.innerHTML;
-        }
+      let self = this;
+      if (self.nextElementSibling) {
+        self.innerHTML = self.nextElementSibling.innerHTML;
+      } else {
+        self.innerHTML = self.parentElement.firstElementChild.innerHTML;
+      }
     }
 
     let step = 0;
 
     function move_left(el) {
-        el.classList.add("left");
-        el.classList.remove("middle", "right");
-        if (el.children[1].children.length > 0) {
-            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
-                el.children[1].lastElementChild.children[i].classList.remove("move");
-            }
+      el.classList.add("left");
+      el.classList.remove("middle", "right");
+      if (el.children[1].children.length > 0) {
+        for (
+          let i = 0;
+          i < el.children[1].lastElementChild.children.length;
+          i++
+        ) {
+          el.children[1].lastElementChild.children[i].classList.remove("move");
         }
+      }
     }
 
     function move_middle(el) {
-        el.classList.add("middle");
-	el.classList.remove("right", "left");
-        if (el.children[1].children.length > 0 && el.children[1].offsetHeight / 27. < el.children[1].lastElementChild.children.length) {
-            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
-                el.children[1].lastElementChild.children[i].classList.add("move");
-            }
+      el.classList.add("middle");
+      el.classList.remove("right", "left");
+      if (
+        el.children[1].children.length > 0 &&
+        el.children[1].offsetHeight / 27 <
+          el.children[1].lastElementChild.children.length
+      ) {
+        for (
+          let i = 0;
+          i < el.children[1].lastElementChild.children.length;
+          i++
+        ) {
+          el.children[1].lastElementChild.children[i].classList.add("move");
         }
+      }
     }
 
     function move_right(el) {
-        el.classList.add("right");
-        el.classList.remove("middle");
-        if (el.children[1].children.length > 0) {
-            for (let i = 0; i < el.children[1].lastElementChild.children.length; i++) {
-                el.children[1].lastElementChild.children[i].classList.remove("move");
-            }
+      el.classList.add("right");
+      el.classList.remove("middle");
+      if (el.children[1].children.length > 0) {
+        for (
+          let i = 0;
+          i < el.children[1].lastElementChild.children.length;
+          i++
+        ) {
+          el.children[1].lastElementChild.children[i].classList.remove("move");
         }
+      }
     }
 
     function swap(el) {
-        let from = "left";
-        let to = "right";
-        if (el.classList.contains(to)) {
-            from = "right";
-            to = "left";
-        }
-        el.classList.remove("transition")
+      let from = "left";
+      let to = "right";
+      if (el.classList.contains(to)) {
+        from = "right";
+        to = "left";
+      }
+      el.classList.remove("transition");
+      setTimeout(() => {
+        el.classList.remove(from);
+        el.classList.add(to);
         setTimeout(() => {
-            el.classList.remove(from);
-            el.classList.add(to);
-            setTimeout(() => {
-                el.classList.add("transition")
-            }, 100);
+          el.classList.add("transition");
         }, 100);
+      }, 100);
     }
 
     function move(el, offset) {
-        let cur_step = (step + offset) % 6
-        if (cur_step == 0) {
-            move_left(el);
-        } else if (cur_step == 1) {
-            swap(el);
-        } else if (cur_step == 2) {
-            move_middle(el);
-        } else if (cur_step == 3) {
-            move_right(el);
-        } else if (cur_step == 4) {
-            swap(el);
-        } else if (cur_step == 5) {
-            move_middle(el);
-        }
+      let cur_step = (step + offset) % 6;
+      if (cur_step == 0) {
+        move_left(el);
+      } else if (cur_step == 1) {
+        swap(el);
+      } else if (cur_step == 2) {
+        move_middle(el);
+      } else if (cur_step == 3) {
+        move_right(el);
+      } else if (cur_step == 4) {
+        swap(el);
+      } else if (cur_step == 5) {
+        move_middle(el);
+      }
     }
 
     function transitions() {
-        let l = document.querySelectorAll(".container > div")[2];
-        let m = document.querySelectorAll(".container > div")[0];
-        let r = document.querySelectorAll(".container > div")[1];
+      let l = document.querySelectorAll(".container > div")[2];
+      let m = document.querySelectorAll(".container > div")[0];
+      let r = document.querySelectorAll(".container > div")[1];
 
-        move(l, 1);
-        move(m, 0);
-        move(r, 2);
-        step = (step + 1) % 6;
-        setTimeout(transitions, 30000);
+      move(l, 1);
+      move(m, 0);
+      move(r, 2);
+      step = (step + 1) % 6;
+      setTimeout(transitions, 30000);
     }
     setTimeout(transitions, 30000);
 
     async function get_data() {
-        let response = await fetch("http://localhost:5000/");
-        let leaderboards = await response.json();
+      let response = await fetch("http://localhost:5000/data");
+      let leaderboards = await response.json();
 
-        render(".leaderboard_today > .wrapper > .content", leaderboards.today, true);
-        render(".leaderboard_total > .wrapper > .content", leaderboards.total, false);
+      render(
+        ".leaderboard_today > .wrapper > .content",
+        leaderboards.today,
+        true
+      );
+      render(
+        ".leaderboard_total > .wrapper > .content",
+        leaderboards.total,
+        false
+      );
     }
 
     get_data();
-</script>
-
+  </script>
 </html>
