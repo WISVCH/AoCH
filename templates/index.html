@@ -188,6 +188,29 @@
         animation-direction: normal;
         animation-delay: 0.5s;
       }
+
+      .star {
+        font-size: 1.3vh;
+        color: #333333;
+        --star-color: #111111;
+      }
+
+      .star.gold {
+        color: #ffff66;
+        --star-color: #cece48;
+      }
+
+      .star.silver {
+        color: #9999cc;
+        --star-color: #77779d;
+      }
+
+      .star.today {
+        -webkit-text-stroke-width: 2px;
+        text-shadow: 0 0 10px #fff,
+          0 0 15px var(--star-color) 0 0 20px var(--star-color),
+          0 0 25px var(--star-color);
+      }
     </style>
   </head>
 
@@ -279,19 +302,18 @@
             day = 25;
           }
           if (index == day - 1) {
-            text +=
-              '<span style="font-size: 1.3vh; text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073,0 0 70px #e60073; color: #';
+            text += '<span class="star today ';
           } else {
-            text += '<span style="font-size: 1.3vh; color: #';
+            text += '<span class="star ';
           }
           if (star === 0) {
-            text += "333333";
+            text += "black";
           } else if (star === 1) {
-            text += "9999cc";
+            text += "sliver";
           } else if (star === 2) {
-            text += "ffff66";
+            text += "gold";
           }
-          text += ';">★   </span>';
+          text += '">★   </span>';
         });
         stars.innerHTML = text;
         stars.style.textAlign = "center";
@@ -433,7 +455,7 @@
       move(r, 2);
       step = (step + 1) % 6;
     }
-    setInterval(transitions, 3000);
+    setInterval(transitions, 30000);
 
     async function get_data() {
       let response = await fetch("http://localhost:5000/data");
