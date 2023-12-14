@@ -3,9 +3,9 @@ import re
 from datetime import datetime, timedelta
 
 import requests
+from dotenv import load_dotenv
 from flask import Flask, render_template, render_template_string
 from flask_cors import CORS
-from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -20,7 +20,9 @@ assignment = {"puzzle": "", "last_pulled": last_pull}
 current_working_directory = os.getcwd()
 
 # required per [community wiki](https://www.reddit.com/r/adventofcode/wiki/faqs/automation)
-user_agent = "https://github.com/larsvantol/AoCH_Leaderboard_Frontend, t.l.breugelmans@student.tudelft.nl"
+user_agent = (
+    "https://github.com/larsvantol/AoCH_Leaderboard_Frontend, t.l.breugelmans@student.tudelft.nl"
+)
 session = os.environ.get("session")
 cookie = f"session={session}"
 headers = {"cookie": cookie, "User-Agent": user_agent}
@@ -33,7 +35,7 @@ authors = {
 }
 
 
-def current_time() -> tuple[str, str, str]:
+def current_time() -> tuple[int, int, int]:
     """
     Returns the current day, month, and year in a tuple of strings.
     If the current day is past Christmas, it will return 25 as the day.
@@ -47,12 +49,12 @@ def current_time() -> tuple[str, str, str]:
     this_year = current_time.year
     if this_month != 12:
         this_day = 25
-        this_year = this_year-1
+        this_year = this_year - 1
 
     return this_day, this_month, this_year
 
 
-def get_data(today: tuple[str, str, str]):
+def get_data(today: tuple[int, int, int]):
     """
     Pulls the data from Advent of Code and returns.
     If the data has been pulled in the last 15 minutes, it will return the
@@ -76,7 +78,8 @@ def get_data(today: tuple[str, str, str]):
     last_pull = now
     return data
 
-def get_day_assignment(today: tuple[str, str, str]):
+
+def get_day_assignment(today: tuple[int, int, int]):
     """
     Pulls the data from Advent of Code and returns.
     This method will make a request to the advent of code website
@@ -87,14 +90,20 @@ def get_day_assignment(today: tuple[str, str, str]):
     this_day, this_month, this_year = today
 
     # only request the puzzle input if we do not have a puzzle already and the day has changed
-    if assignment['puzzle'] != "" and this_day == assignment['last_pulled'].day and this_month == assignment['last_pulled'].month and this_year == assignment['last_pulled'].year:
-        return assignment['puzzle']
-    
+    if (
+        assignment["puzzle"] != ""
+        and this_day == assignment["last_pulled"].day
+        and this_month == assignment["last_pulled"].month
+        and this_year == assignment["last_pulled"].year
+    ):
+        return assignment["puzzle"]
+
     url = f"https://adventofcode.com/{this_year}/day/{this_day}"
     response = requests.get(url, headers=headers, timeout=5)
-    assignment['puzzle'] = response.text
-    assignment['last_pulled'] = datetime(year=this_year, month=this_month, day=this_day)
+    assignment["puzzle"] = response.text
+    assignment["last_pulled"] = datetime(year=this_year, month=this_month, day=this_day)
     return response.text
+
 
 def filter_non_active_members(members):
     """
@@ -143,13 +152,11 @@ def return_day_data(members, total_members, today):
                         star_time_string += f"{star_time.seconds//3600} hours "
                     if star_time.seconds // 60 % 60 > 0:
                         star_time_string += f"{star_time.seconds//60%60} minutes"
-                    person[
-                        "star" + star
-                    ] = star_time_string
+                    person["star" + star] = star_time_string
 
-                    person["star_index" + star] = value["completion_day_level"][str(this_day)][star][
-                        "star_index"
-                    ]
+                    person["star_index" + star] = value["completion_day_level"][str(this_day)][
+                        star
+                    ]["star_index"]
 
             today_data.append(person)
     today_data.sort(key=lambda x: x["star_index1"])
@@ -174,11 +181,10 @@ def return_day_assignment(html):
     assignment_html = re.search(r"<article class=\"day-desc\">(.|\n)*?<\/article>", html)
     if assignment_html:
         assignment_html = assignment_html.group()
-        assignment_html = assignment_html.replace("<article class=\"day-desc\">", "")
+        assignment_html = assignment_html.replace('<article class="day-desc">', "")
         assignment_html = assignment_html.replace("</article>", "")
         return assignment_html
     return html
-
 
 
 def return_global_data(members):
@@ -215,10 +221,10 @@ def return_data():
     total_data = return_global_data(active_members)
     assignment_data = return_day_assignment(assignment_html)
 
-
     data = {"total": total_data, "today": today_data, "assignment": assignment_data}
 
     return data
+
 
 @app.route("/")
 def return_index():

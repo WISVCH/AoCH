@@ -23,12 +23,12 @@
 
       body {
         margin: 0;
-	overflow-y: hidden;
-	overflow-x: hidden;
+        overflow-y: hidden;
+        overflow-x: hidden;
         background-color: black;
         color: #f8ffdd;
-	font-family: "Roboto", sans-serif;
-	font-size: 1.5vh;
+        font-family: "Roboto", sans-serif;
+        font-size: 1.5vh;
       }
 
       .container {
@@ -145,19 +145,18 @@
 
       .task_today > .wrapper > .content {
         background-color: rgba(0, 0, 0, 0.418);
-	padding: 10px;
-	padding-top: 2.5vh;
-	font-size: 1vh;
-	
+        padding: 10px;
+        padding-top: 2.5vh;
+        font-size: 1vh;
       }
       .task_today > .wrapper > .content > h2 {
-	  font-size: 1.7vh;
-	  background: none;
-	  height: 2.2vh;
+        font-size: 1.7vh;
+        background: none;
+        height: 2.2vh;
       }
 
       .task_today > .wrapper > .content > a {
-	  color: cornflowerblue;
+        color: cornflowerblue;
       }
 
       .header > .individual {
@@ -188,6 +187,26 @@
         animation-iteration-count: infinite;
         animation-direction: normal;
         animation-delay: 0.5s;
+      }
+      .glow {
+        font-size: 80px;
+        color: #fff;
+        text-align: center;
+        -webkit-animation: glow 1s ease-in-out infinite alternate;
+        -moz-animation: glow 1s ease-in-out infinite alternate;
+        animation: glow 1s ease-in-out infinite alternate;
+      }
+      @-webkit-keyframes glow {
+        from {
+          text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073,
+            0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073,
+            0 0 70px #e60073;
+        }
+        to {
+          text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6,
+            0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6,
+            0 0 80px #ff4da6;
+        }
       }
     </style>
   </head>
@@ -271,9 +290,14 @@
         let stars = document.createElement("span");
         let text = "";
         // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
-        child.stars.forEach((star) => {
+        child.stars.forEach((star, index) => {
           // add all stars with their color
-	    text += '<span style="font-size: 1.3vh; color: #';
+          day = 14;
+          if (index == day - 1) {
+            text += '<span class="glow" style="font-size: 1.3vh; color: #';
+          } else {
+            text += '<span style="font-size: 1.3vh; color: #';
+          }
           if (star === 0) {
             text += "333333";
           } else if (star === 1) {
@@ -301,8 +325,9 @@
     /// - `today` : if the children will be added to the today leaderboard this is true
     function render(selector, children, today) {
       let el = document.querySelector(selector);
-      let max_in_list = (el.parentNode.offsetHeight / screen.height) * 100 / 2.2;
-	console.log(max_in_list);
+      let max_in_list =
+        ((el.parentNode.offsetHeight / screen.height) * 100) / 2.2;
+      console.log(max_in_list);
       // remove all children as we will be adding them again
       el.innerHTML = "";
       // adding children
@@ -350,7 +375,7 @@
       el.classList.remove("right", "left");
       if (
         el.children[1].children.length > 0 &&
-	(el.children[1].offsetHeight / screen.height) * 100 / 2.2 <
+        ((el.children[1].offsetHeight / screen.height) * 100) / 2.2 <
           el.children[1].lastElementChild.children.length
       ) {
         for (
@@ -358,7 +383,8 @@
           i < el.children[1].lastElementChild.children.length;
           i++
         ) {
-	    if (!el.classList.contains("nomove")) el.children[1].lastElementChild.children[i].classList.add("move");
+          if (!el.classList.contains("nomove"))
+            el.children[1].lastElementChild.children[i].classList.add("move");
         }
       }
     }
