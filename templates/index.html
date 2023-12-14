@@ -456,7 +456,7 @@
       move(r, 2);
       step = (step + 1) % 6;
     }
-    setInterval(transitions, 3000);
+    setInterval(transitions, 30000);
 
     async function get_data() {
       let response = await fetch("http://localhost:5000/data");

@@ -139,13 +139,22 @@ def return_day_data(members, total_members, today):
 
             for star in ["1", "2"]:
                 if star in value["completion_day_level"][str(this_day)]:
-                    star_time = (
-                        datetime.fromtimestamp(
-                            value["completion_day_level"][str(this_day)][star]["get_star_ts"]
+                    if star == "1":
+                        star_time = (
+                            datetime.fromtimestamp(
+                                value["completion_day_level"][str(this_day)][star]["get_star_ts"]
+                            )
+                            - time_started
                         )
-                        - time_started
-                    )
+                    else:
+                        star_time = datetime.fromtimestamp(
+                            value["completion_day_level"][str(this_day)][star]["get_star_ts"]
+                        ) - datetime.fromtimestamp(
+                            value["completion_day_level"][str(this_day)]["1"]["get_star_ts"]
+                        )
                     star_time_string = ""
+                    if star == "2":
+                        star_time_string += "+ "
                     if star_time.days > 0:
                         star_time_string += f"{star_time.days} days "
                     if star_time.seconds // 3600 > 0:
