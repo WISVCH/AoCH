@@ -206,10 +206,11 @@
       }
 
       .star.today {
-        -webkit-text-stroke-width: 2px;
-        text-shadow: 0 0 10px #fff,
-          0 0 15px var(--star-color) 0 0 20px var(--star-color),
-          0 0 25px var(--star-color);
+        --glow-width: 5px;
+        text-shadow: 0 0 var(--glow-width) #fff,
+          0 0 calc(var(--glow-width) * 1.5) var(--star-color),
+          0 0 calc(var(--glow-width) * 2) var(--star-color),
+          0 0 calc(var(--glow-width) * 2.5) var(--star-color);
       }
     </style>
   </head>
@@ -455,7 +456,7 @@
       move(r, 2);
       step = (step + 1) % 6;
     }
-    setInterval(transitions, 30000);
+    setInterval(transitions, 3000);
 
     async function get_data() {
       let response = await fetch("http://localhost:5000/data");
