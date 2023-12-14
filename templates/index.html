@@ -188,26 +188,6 @@
         animation-direction: normal;
         animation-delay: 0.5s;
       }
-      .glow {
-        font-size: 80px;
-        color: #fff;
-        text-align: center;
-        -webkit-animation: glow 1s ease-in-out infinite alternate;
-        -moz-animation: glow 1s ease-in-out infinite alternate;
-        animation: glow 1s ease-in-out infinite alternate;
-      }
-      @-webkit-keyframes glow {
-        from {
-          text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073,
-            0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073,
-            0 0 70px #e60073;
-        }
-        to {
-          text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6,
-            0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6,
-            0 0 80px #ff4da6;
-        }
-      }
     </style>
   </head>
 
@@ -292,9 +272,15 @@
         // child.stars is a list of 0, 1, or 2 where the number is the amount of stars gotten said day
         child.stars.forEach((star, index) => {
           // add all stars with their color
-          day = 14;
+          now = new Date();
+          let day = now.getDate();
+          let month = now.getMonth() + 1;
+          if (month != 12) {
+            day = 25;
+          }
           if (index == day - 1) {
-            text += '<span class="glow" style="font-size: 1.3vh; color: #';
+            text +=
+              '<span style="font-size: 1.3vh; text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073,0 0 70px #e60073; color: #';
           } else {
             text += '<span style="font-size: 1.3vh; color: #';
           }
@@ -447,7 +433,7 @@
       move(r, 2);
       step = (step + 1) % 6;
     }
-    setInterval(transitions, 30000);
+    setInterval(transitions, 3000);
 
     async function get_data() {
       let response = await fetch("http://localhost:5000/data");
