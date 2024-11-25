@@ -60,3 +60,7 @@ Configuration of the leaderboard is stored in environment variables. Add the fol
 ### 5. Start the server
 
 Start the server by running the application with `waitress`, e.g. `session=<SESSION> leaderboard_id=<LEADERBOARD_ID> waitress-serve --call AoCH:create_app`
+
+## Docker
+
+The project can also be run using the provided `Dockerfile` for this, simply build the docker image, `docker build -t aoch .` and run it: `docker run aoch`.
