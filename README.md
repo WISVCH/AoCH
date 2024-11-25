@@ -8,8 +8,8 @@ This project shows the current statistics and leaderboard of CH members for the 
 
 This script follows the guidelines stated by [Advent of Code](https://www.reddit.com/r/adventofcode/wiki/faqs/automation), namely:
 - it includes the emails of the maintainers and a link to the current repo in the User-Agent header for all outbound requests;
-- it throttles the requests made to the website by only requesting (private) leaderboard updates every 15 minutes (`L55: get_data()`);
-- the puzzle for each day is requested only once and 'cached' runtime only, so restarting the server removes the 'cache' (`L79: get_day_assignment()`).
+- it throttles the requests made to the website by only requesting (private) leaderboard updates every 15 minutes (`L68: get_data()`);
+- the puzzle for each day is requested only once and 'cached' runtime only, so restarting the server removes the 'cache' (`L93: get_day_assignment()`).
 
 Do not misuse this leaderboard we created and if you decide to fork this repository, please update the User-Agent to your own email and repository.
 
@@ -55,8 +55,8 @@ pip install -r requirements.txt
 
 ### 4. Adding environmental variables
 
-Create a `.env` file in the project folder. Add the following two variables: `session` and `leaderboard_id`. `session` is the cookie stored by AoC if you authenticate in the browser (valid for a month) and `leaderboard_id` can be found in the url of the leaderboard you are trying to add.
+Configuration of the leaderboard is stored in environment variables. Add the following two variables: `session` and `leaderboard_id`. `session` is the cookie stored by AoC if you authenticate in the browser (valid for a month) and `leaderboard_id` can be found in the url of the leaderboard you are trying to add.
 
 ### 5. Start the server
 
-Start the server by running the `app.py` file. If the server has started, you can go to `localhost:5000` in your browser.
+Start the server by running the application with `waitress`, e.g. `session=<SESSION> leaderboard_id=<LEADERBOARD_ID> waitress-serve --call AoCH:create_app`

@@ -15,9 +15,9 @@
 
   <body>
     <div class="container">
-      <img class="background-image" src="/images/background.jpg" />
+      <!-- <img class="background-image" src="/images/background.jpg" /> -->
       <h1>Advent of Code</h1>
-      <div class="leaderboard_today transition middle">
+      <div class="leaderboard_today right">
         <h2>Todays Leaderboard</h2>
         <div class="wrapper leaderboard">
           <div class="header">
@@ -31,7 +31,7 @@
           <div class="content"></div>
         </div>
       </div>
-      <div class="leaderboard_total transition right">
+      <div class="leaderboard_total middle">
         <h2>December Leaderboard</h2>
         <div class="wrapper leaderboard">
           <div class="header">
@@ -45,7 +45,7 @@
           <div class="content"></div>
         </div>
       </div>
-      <div class="task_today transition nomove right">
+      <div class="task_today nomove right">
         <h2>Todays Puzzle</h2>
         <!--img class="background-image" src="/images/possible-bg-2.jpg"-->
         <div class="wrapper task">
@@ -56,24 +56,15 @@
   </body>
   <script src="/scripts/main.js"></script>
   <script>
-    setInterval(transitions, 30000);
-    
     async function get_data() {
-        let response = await fetch("/data");
-        let leaderboards = await response.json();
+      let response = await fetch("/data");
+      let leaderboards = await response.json();
 
-        render(
-            ".leaderboard_today > .wrapper > .content",
-            leaderboards.today,
-            true
-        );
-        render(
-            ".leaderboard_total > .wrapper > .content",
-            leaderboards.total,
-            false
-        );
-        document.querySelector(".task_today > .wrapper > .content").innerHTML =
-            leaderboards.assignment;
+      render(
+        ".leaderboard_total > .wrapper > .content",
+        leaderboards.total,
+        false
+      );
     }
 
     setInterval(get_data, 60000 * 15);
