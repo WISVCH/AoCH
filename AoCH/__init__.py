@@ -3,14 +3,15 @@ import re
 from datetime import datetime, timedelta
 
 import requests
-from dotenv import load_dotenv
-from flask import Flask, render_template, render_template_string
+from flask import Blueprint, Flask, render_template, render_template_string
 from flask_cors import CORS
 
-load_dotenv()
+import logging
 
-app = Flask(__name__)
-CORS(app)
+
+logger = logging.getLogger('aoch')
+logger.setLevel(logging.INFO)
+bp = Blueprint('aoch', __name__)
 
 data = {}
 # the two below variables are used to keep track of when was last pulled, so we do not overload the Advent of Code servers
@@ -33,6 +34,20 @@ authors = {
     "KasperVaessen": "Kasper Vaessen 🎄",
     "Thom Breugelmans": "Thom Breugelmans 🎁",
 }
+
+
+def create_app():
+    cur_folder = os.path.dirname(os.path.realpath(__file__))
+    app = Flask(__name__, 
+                static_url_path='', 
+                static_folder=os.path.join(cur_folder, '../static'), 
+                template_folder=os.path.join(cur_folder, '../templates'))
+    CORS(app)
+
+    app.register_blueprint(bp)
+    app.add_url_rule('/', endpoint='index')
+
+    return app
 
 
 def current_time() -> tuple[int, int, int]:
@@ -70,10 +85,11 @@ def get_data(today: tuple[int, int, int]):
     if (now - last_pull) < timedelta(minutes=15):
         return data
 
-    app.logger.info("Pulling new data from Advent of Code!")
+    logger.info("Pulling new data from Advent of Code!")
 
     url = f"https://adventofcode.com/{this_year}/leaderboard/private/view/{leaderboard_id}.json"
     response = requests.get(url, headers=headers, timeout=5)
+    logger.info(f'Getting data for {this_year}, response: {response.status_code}')
     data = response.json()
     last_pull = now
     return data
@@ -100,6 +116,7 @@ def get_day_assignment(today: tuple[int, int, int]):
 
     url = f"https://adventofcode.com/{this_year}/day/{this_day}"
     response = requests.get(url, headers=headers, timeout=5)
+    logger.info(f'Getting challenge for {this_day}-{this_month}-{this_year}, response: {response.status_code}')
     assignment["puzzle"] = response.text
     assignment["last_pulled"] = datetime(year=this_year, month=this_month, day=this_day)
     return response.text
@@ -217,7 +234,7 @@ def return_global_data(members):
     return global_data
 
 
-@app.route("/data")
+@bp.route("/data")
 def return_data():
     """
     Endpoint for the frontend.
@@ -235,7 +252,20 @@ def return_data():
     return data
 
 
-@app.route("/")
+@bp.route("/challenge")
+def return_challenge():
+    return render_template("challenge.html")
+
+@bp.route("/leaderboard")
+def return_leaderboard():
+    return render_template("leaderboard.html")
+
+@bp.route("/leaderboard/today")
+def return_leaderboard_today():
+    return render_template("leaderboard_today.html")
+
+
+@bp.route("/")
 def return_index():
     """
     Endpoint for the frontend.
@@ -244,4 +274,5 @@ def return_index():
 
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app = create_app()
+    app.run()

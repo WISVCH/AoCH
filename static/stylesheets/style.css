@@ -1,0 +1,208 @@
+@keyframes elementMove {
+0% {
+    transform: translateY(0px);
+}
+
+94% {
+    transform: translateY(0px);
+}
+
+100% {
+    transform: translateY(-105%);
+}
+}
+
+body {
+margin: 0;
+overflow-y: hidden;
+overflow-x: hidden;
+background-color: black;
+color: #f8ffdd;
+font-family: "Roboto", sans-serif;
+font-size: 1.5vh;
+}
+
+.container {
+width: 100vw;
+height: 100vh;
+position: absolute;
+top: 0;
+left: 0;
+background-image: url("/images/background.jpg");
+background-size: cover;
+}
+
+h1 {
+position: absolute;
+width: 60%;
+height: 4.7vh;
+left: 20%;
+top: 0.5vh;
+margin: 0;
+padding-top: 0.3vh;
+padding-bottom: 0;
+background-color: rgba(50, 30, 30, 0.8);
+text-align: center;
+font-size: 4.5vh;
+}
+h2 {
+position: absolute;
+width: 50%;
+height: 3vh;
+left: 25%;
+top: 0;
+margin: 0;
+background-color: rgba(50, 30, 30, 0.8);
+text-align: center;
+font-size: 2.5vh;
+}
+
+.leaderboard_today,
+.leaderboard_total,
+.task_today {
+position: absolute;
+height: 94vh;
+width: 95vw;
+top: 5.5vh;
+}
+
+.background-image {
+position: absolute;
+height: 100%;
+width: 100%;
+object-fit: cover;
+}
+
+.wrapper {
+position: relative;
+top: 3.3vh;
+left: 0;
+width: 95vw;
+height: calc(100% - 5.8vh);
+clip-path: inset(0px 0px 0px 0px);
+}
+
+.wrapper > .content {
+clip-path: inset(0px 0px 0px 0px);
+}
+
+.wrapper > .header {
+height: 2vh;
+margin-bottom: 0.7vh;
+}
+
+.wrapper > div {
+width: 100%;
+}
+
+.individual {
+position: relative;
+width: 100%;
+height: 2vh;
+margin-bottom: 0.1vh;
+transform: translate3d(0px, 0px, 0px);
+font-size: 1.5vh;
+}
+
+.individual > * {
+background-color: rgba(50, 30, 30, 0.8);
+margin-left: 0.5vw;
+display: inline-block;
+width: 25%;
+text-align: left;
+overflow-x: hidden;
+white-space: nowrap;
+padding-left: 2px;
+}
+
+.individual > *:first-child {
+margin-left: 0;
+padding-left: 0;
+text-align: center;
+width: 7%;
+}
+
+.individual > *:nth-child(2) {
+padding-left: 0;
+text-align: center;
+width: 10%;
+}
+
+.individual > *:nth-child(3) {
+width: 30%;
+}
+
+.leaderboard_total > .wrapper > div > .individual > *:last-child,
+.leaderboard_today > .wrapper > .header > .individual > *:last-child {
+width: 51%;
+}
+
+.task_today > .wrapper > .content {
+background-color: rgba(0, 0, 0, 0.418);
+padding: 10px;
+padding-top: 2.5vh;
+font-size: 1vh;
+}
+.task_today > .wrapper > .content > h2 {
+font-size: 1.7vh;
+background: none;
+height: 2.2vh;
+}
+
+.task_today > .wrapper > .content > a {
+color: cornflowerblue;
+}
+
+.header > .individual {
+height: 100%;
+font-size: 1.7vh;
+}
+
+.transition {
+transition: left 300ms linear;
+}
+
+.middle {
+left: 2.5vw;
+}
+
+.left {
+left: -100vw;
+}
+
+.right {
+left: 100vw;
+}
+
+.move {
+animation-name: elementMove;
+animation-timing-function: linear;
+animation-duration: 3s;
+animation-iteration-count: infinite;
+animation-direction: normal;
+animation-delay: 0.5s;
+}
+
+.star {
+font-size: 1.3vh;
+color: #333333;
+--star-color: #111111;
+}
+
+.star.gold {
+color: #ffff66;
+--star-color: #cece48;
+}
+
+.star.silver {
+color: #9999cc;
+--star-color: #77779d;
+}
+
+.star.today {
+--glow-width: 5px;
+text-shadow: 0 0 var(--glow-width) #fff,
+    0 0 calc(var(--glow-width) * 1.5) var(--star-color),
+    0 0 calc(var(--glow-width) * 2) var(--star-color),
+    0 0 calc(var(--glow-width) * 2.5) var(--star-color);
+}
