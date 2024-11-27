@@ -10,7 +10,7 @@ on:
     branches:
     - main
 jobs:
-  testAndDeploy:
+  deploy:
     name: Deploy Docker Image
     runs-on: ubuntu-latest
 
