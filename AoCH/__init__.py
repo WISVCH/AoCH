@@ -146,8 +146,8 @@ def return_day_data(members, total_members, today):
 
     for key, value in members.items():
         if str(this_day) in value["completion_day_level"]:
-            # Today +6 hours
-            time_started = datetime(year=this_year, month=12, day=this_day, hour=6)
+            # Today +6 hours (with timezone)
+            time_started = datetime(year=this_year, month=12, day=this_day, hour=5)
 
             person = {
                 "name": value["name"],
