@@ -1,4 +1,4 @@
-FROM python:3-alpine as build
+FROM python:3.9-alpine as build
 RUN pip install --upgrade pip
 
 RUN mkdir /app

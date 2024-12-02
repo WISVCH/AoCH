@@ -1,6 +1,7 @@
 import os
 import re
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 import requests
 from flask import Blueprint, Flask, render_template, render_template_string
@@ -22,7 +23,7 @@ current_working_directory = os.getcwd()
 
 # required per [community wiki](https://www.reddit.com/r/adventofcode/wiki/faqs/automation)
 user_agent = (
-    "https://github.com/larsvantol/AoCH_Leaderboard_Frontend, t.l.breugelmans@student.tudelft.nl"
+    "https://github.com/WISVCH/AoCH, beheer@ch.tudelft.nl"
 )
 session = os.environ.get("session")
 cookie = f"session={session}"
@@ -56,7 +57,7 @@ def current_time() -> tuple[int, int, int]:
     If the current day is past Christmas, it will return 25 as the day.
     """
     # Get current day
-    current_time = datetime.now() - timedelta(hours=6)
+    current_time = datetime.now(tz=ZoneInfo('Europe/Amsterdam')) - timedelta(hours=6)
     this_day = current_time.day
     if this_day > 25:
         this_day = 25
@@ -147,7 +148,7 @@ def return_day_data(members, total_members, today):
     for key, value in members.items():
         if str(this_day) in value["completion_day_level"]:
             # Today +6 hours
-            time_started = datetime(year=this_year, month=12, day=this_day, hour=6)
+            time_started = datetime(year=this_year, month=12, day=this_day, hour=6, tzinfo=ZoneInfo('Europe/Amsterdam'))
 
             person = {
                 "name": value["name"],
@@ -160,7 +161,7 @@ def return_day_data(members, total_members, today):
                         star_time = (
                             datetime.fromtimestamp(
                                 value["completion_day_level"][str(this_day)][star]["get_star_ts"]
-                            )
+                            , tz=ZoneInfo('Europe/Amsterdam'))
                             - time_started
                         )
                     else:
