@@ -52,6 +52,7 @@ defmodule AoCH do
       end
     end)
     |> Enum.map(fn {_id, data} -> data end)
+    |> Enum.reject(&(&1[:score] == 0))
     |> Enum.sort_by(& &1[:score], :desc)
   end
 

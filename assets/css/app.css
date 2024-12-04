@@ -3,3 +3,12 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+body {
+    @apply text-text;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+h1, h2, h3, h4 {
+    @apply text-primary_light;
+    text-shadow: 0 0 2px #00cc00, 0 0 5px #00cc00;
+}
