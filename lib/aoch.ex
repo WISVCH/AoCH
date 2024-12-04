@@ -165,7 +165,7 @@ defmodule AoCH do
     {:ok, html} =
       res.body |> Floki.parse_document()
 
-    html |> Floki.find("article.day-desc") |> Floki.raw_html()
+    html |> Floki.find("article.day-desc") |> List.first() |> Floki.raw_html()
   end
 
   defp request_raw_data(year) do
