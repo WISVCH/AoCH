@@ -1,7 +1,7 @@
 <div class="grid grid-cols-6 sm:grid-cols-11 pb-2 font-bold w-full">  
     <p class="col-span-2">score</p>
     <p class="col-span-3">name</p>
-    <p class="col-span-6">stars</p>
+    <p class="col-span-6">stars</p> 
   </div>
   <div :for={person <- @scores} class="grid grid-cols-6 sm:grid-cols-11 w-full">
     <p><%= person[:rank] %>)</p>
