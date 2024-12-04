@@ -4,7 +4,12 @@
   <p class="col-span-2">part 1</p>
   <p class="col-span-2">part 2</p>
 </div>
-<div :for={person <- @today} class="grid grid-cols-9">
+<div 
+  id="scores" 
+  :for={person <- @today} 
+  class="grid grid-cols-9" 
+  phx-hook={@auto_scroll && "ScrollToBottom"}
+  >
   <p class=" pr-1"><%= person[:rank] %>)</p>
   <p class="text-primary pr-1"><%= person[:score] %></p>
   <p class="col-span-3 pr-1"><%= AoCHWeb.name(person[:name]) %></p>
