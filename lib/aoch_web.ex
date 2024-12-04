@@ -127,6 +127,16 @@ defmodule AoCHWeb do
     end
   end
 
+  def name(name) do
+    case name do
+      nil -> "Anonymous"
+      "Thom Breugelmans" -> "Thom Breugelmans 🎁"
+      "KasperVaessen" -> "Kasper Vaessen 🎄"
+      "larsvantol" -> "Lars van Tol 🎅"
+      name -> name
+    end
+  end
+
   @doc """
   When used, dispatch to the appropriate controller/live_view/etc.
   """

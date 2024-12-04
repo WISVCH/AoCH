@@ -4,11 +4,28 @@
 
 /* This file is for your main application CSS */
 body {
-    @apply text-text;
+    @apply text-text text-sm leading-5;
     font-family: 'Courier New', Courier, monospace;
 }
 
 h1, h2, h3, h4 {
     @apply text-primary_light;
     text-shadow: 0 0 2px #00cc00, 0 0 5px #00cc00;
+}
+
+a {
+    @apply text-accent;
+    text-shadow: 0 0 2px #FFFF66, 0 0 5px #FFFF66;
+}
+
+h2 {
+    @apply text-2xl;
+}
+
+.day-desc {
+    @apply space-y-3;
+}
+
+.day-desc pre {
+    @apply w-fit p-1 bg-[#10101a] border border-[#333340] rounded-sm;
 }

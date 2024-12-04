@@ -1,14 +1,14 @@
 <div class="grid grid-cols-11 pb-2 font-bold">  
-  <p>rank</p>
+  <p></p>
   <p>score</p>
   <p class="col-span-3">name</p>
   <p class="col-span-3">time part 1</p>
   <p class="col-span-3">time part 2</p>
 </div>
-<div :for={{person, index} <- Enum.with_index(@today)} class="grid grid-cols-11">
-  <p><%= index %>.</p>
+<div :for={person <- @today} class="grid grid-cols-11">
+  <p><%= person[:rank] %>)</p>
   <p class="text-primary"><%= person[:score] %></p>
-  <p class="col-span-3"><%= person[:name] || "Wise owl?" %></p>
+  <p class="col-span-3"><%= AoCHWeb.name(person[:name]) %></p>
   <p class="col-span-3"><%= AoCHWeb.format_time(person[:first_star]) %></p>
   <p class="col-span-3">+ <%= AoCHWeb.format_time(person[:second_star]) %></p>
 </div>

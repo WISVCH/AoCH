@@ -18,7 +18,9 @@ module.exports = {
         text: "#CCCCCC",
         primary: "#009900",
         primary_light: "#00CC00",
-        accent: "#FFFF66"
+        accent: "#FFFF66",
+        accent2: "#9999cc",
+        disabled: "#333333"
       }
     },
   },

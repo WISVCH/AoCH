@@ -54,6 +54,22 @@ defmodule AoCH do
     |> Enum.map(fn {_id, data} -> data end)
     |> Enum.reject(&(&1[:score] == 0))
     |> Enum.sort_by(& &1[:score], :desc)
+    |> assign_ranks()
+  end
+
+  def get_leaderboard_year() do
+    get_raw_data()
+    |> Map.get("members", [])
+    |> Enum.map(fn {_id, data} -> extract_year_data(data) end)
+    |> Enum.reject(&(&1[:score] == 0))
+    |> Enum.sort_by(& &1[:score], :desc)
+    |> assign_ranks()
+  end
+
+  def get_challenge(day, year) do
+    ConCache.get_or_store(:cache, "challenge_#{year}_#{day}", fn ->
+      %ConCache.Item{value: request_day_challenge(day, year), ttl: :infinity}
+    end)
   end
 
   def now() do
@@ -71,6 +87,40 @@ defmodule AoCH do
         minute: 0,
         second: 0,
         microsecond: {0, 0}
+    }
+  end
+
+  defp assign_ranks(data) do
+    data
+    |> Enum.with_index(1)
+    |> Enum.reduce([], fn {item, index}, acc ->
+      rank =
+        case acc do
+          [] -> index
+          [%{score: prev_score, rank: prev_rank} | _] when prev_score == item.score -> prev_rank
+          _ -> index
+        end
+
+      [Map.put(item, :rank, rank) | acc]
+    end)
+    |> Enum.reverse()
+  end
+
+  defp extract_year_data(data) do
+    stars =
+      1..25
+      |> Enum.map(fn day ->
+        case data["completion_day_level"][Integer.to_string(day)] do
+          nil -> 0
+          %{"2" => _} -> 2
+          _ -> 1
+        end
+      end)
+
+    %{
+      name: data["name"],
+      stars: stars,
+      score: data["local_score"]
     }
   end
 
@@ -101,6 +151,23 @@ defmodule AoCH do
       unix_second_star: unix_time_second_star,
       score: 0
     }
+  end
+
+  defp request_day_challenge(day, year) do
+    url = "https://adventofcode.com/#{year}/day/#{day}"
+
+    {:ok, res} =
+      Req.get(url,
+        headers: [
+          {"cookie", "session=#{Application.get_env(:aoch, :aoc_session_cookie)}"},
+          {"User-Agent", "https://github.com/kaspervaessen/aoch, kasperv@ch.tudelft.nl"}
+        ]
+      )
+
+    {:ok, html} =
+      res.body |> Floki.parse_document()
+
+    html |> Floki.find("article.day-desc") |> Floki.raw_html()
   end
 
   defp request_raw_data() do
