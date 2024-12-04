@@ -17,10 +17,15 @@ defmodule AoCHWeb.Router do
   scope "/", AoCHWeb do
     pipe_through :browser
 
-    get "/", PageController, :today
+    get "/", PageController, :challenge
+    get "/:year/day/:day/", PageController, :challenge
+    get "/:year/day/:day/challenge", PageController, :challenge
     get "/challenge", PageController, :challenge
+    get "/:year/day/:day/challenge", PageController, :challenge
     get "/leaderboard", PageController, :total
+    get "/:year/leaderboard", PageController, :total
     get "/leaderboard/today", PageController, :today
+    get "/:year/day/:day/leaderboard/today", PageController, :today
   end
 
   # Other scopes may use custom stacks.

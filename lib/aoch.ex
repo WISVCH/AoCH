@@ -7,18 +7,15 @@ defmodule AoCH do
   if it comes from the database, an external API or others.
   """
 
-  def get_raw_data() do
-    ConCache.get_or_store(:cache, :raw_data, &request_raw_data/0)
+  def get_raw_data(year) do
+    ConCache.get_or_store(:cache, "raw_data_#{year}", fn -> request_raw_data(year) end)
   end
 
-  def get_leaderboard_today() do
-    now = now()
-    day = if now.month < 12, do: 25, else: now.day
-
+  def get_leaderboard_day(day, year) do
     data_per_member =
-      get_raw_data()
+      get_raw_data(year)
       |> Map.get("members", [])
-      |> Enum.map(fn {id, data} -> {id, extract_day_data(data, day)} end)
+      |> Enum.map(fn {id, data} -> {id, extract_day_data(data, year, day)} end)
       |> Map.new()
 
     sort_by_first =
@@ -57,8 +54,8 @@ defmodule AoCH do
     |> assign_ranks()
   end
 
-  def get_leaderboard_year() do
-    get_raw_data()
+  def get_leaderboard_year(year) do
+    get_raw_data(year)
     |> Map.get("members", [])
     |> Enum.map(fn {_id, data} -> extract_year_data(data) end)
     |> Enum.reject(&(&1[:score] == 0))
@@ -76,12 +73,13 @@ defmodule AoCH do
     DateTime.utc_now() |> DateTime.shift_zone!("America/New_York")
   end
 
-  def start_of_day(day) do
+  def start_of_day(year, day) do
     now = now()
 
     %DateTime{
       now
-      | month: 12,
+      | year: year,
+        month: 12,
         day: day,
         hour: 0,
         minute: 0,
@@ -124,8 +122,8 @@ defmodule AoCH do
     }
   end
 
-  defp extract_day_data(data, day) do
-    start_of_day = start_of_day(day) |> DateTime.to_unix()
+  defp extract_day_data(data, year, day) do
+    start_of_day = start_of_day(year, day) |> DateTime.to_unix()
 
     unix_time_first_star =
       data["completion_day_level"][Integer.to_string(day)]["1"]["get_star_ts"]
@@ -170,9 +168,7 @@ defmodule AoCH do
     html |> Floki.find("article.day-desc") |> Floki.raw_html()
   end
 
-  defp request_raw_data() do
-    now = now()
-    year = if now.month < 12, do: now.year - 1, else: now.year
+  defp request_raw_data(year) do
     url = "https://adventofcode.com/#{year}/leaderboard/private/view/954860.json"
 
     {:ok, res} =
