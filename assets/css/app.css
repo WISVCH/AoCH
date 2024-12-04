@@ -4,7 +4,7 @@
 
 /* This file is for your main application CSS */
 body {
-    @apply text-text text-sm leading-5;
+    @apply text-text text-xs sm:text-sm 3xl:text-4xl leading-5;
     font-family: 'Courier New', Courier, monospace;
 }
 
@@ -19,7 +19,7 @@ a {
 }
 
 h2 {
-    @apply text-2xl;
+    @apply text-lg md:text-2xl;
 }
 
 .day-desc {

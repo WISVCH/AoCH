@@ -1,8 +1,8 @@
-<header class="p-5 flex flex-row justify-between lg:h-32">
+<header class="p-5 flex flex-row justify-between lg:h-32 3xl:h-44">
 
     <div id="headers" class="w-fit">
-      <h1 class="text-2xl md:text-4xl">Advent of CH</h1>
-      <p class="text-primary text-lg md:text-2xl text-right "><%= "{year=>" %> <span class="text-primary_light"><%= AoCH.now().year%></span>}</p>
+      <h1 class="text-2xl md:text-4xl 3xl:text-7xl">Advent of CH</h1>
+      <p class="text-primary text-lg md:text-2xl 3xl:text-5xl text-right "><%= "{year=>" %> <span class="text-primary_light"><%= AoCH.now().year%></span>}</p>
     </div>
 
     <div class="text-lg -rotate-[35deg] mr-3">
@@ -15,10 +15,10 @@
     `m-m`</pre>
     </div>
 </header>
-<main class="px">
-  <div class="mx-auto max-w-5xl pb-5">
+<main class="px w-screen">
+  <div class="mx-auto pb-5 w-full">
     <.flash_group flash={@flash} />
-    <div class="mx-5">
+    <div class="px-5 2xl:px-40 w-full">
       <%= @inner_content %>
     </div>
   </div>

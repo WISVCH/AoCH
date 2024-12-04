@@ -109,21 +109,21 @@ defmodule AoCHWeb do
   def format_time(seconds) when is_integer(seconds) do
     case seconds do
       s when s < 60 ->
-        "#{s} seconds"
+        "#{s} sec"
 
       s when s < 3600 ->
         m = div(s, 60)
-        "#{m} min, #{rem(s, 60)} sec"
+        "#{m}m, #{rem(s, 60)}s"
 
       s when s < 86400 ->
         h = div(s, 3600)
         m = div(rem(s, 3600), 60)
-        "#{h} hours, #{m} min"
+        "#{h}h, #{m}m"
 
       s ->
         d = div(s, 86400)
         h = div(rem(s, 86400), 3600)
-        "#{d} days, #{h} hours"
+        "#{d}d, #{h}h"
     end
   end
 

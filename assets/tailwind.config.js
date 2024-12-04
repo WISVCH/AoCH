@@ -21,6 +21,9 @@ module.exports = {
         accent: "#FFFF66",
         accent2: "#9999cc",
         disabled: "#333333"
+      },
+      screens: {
+        "3xl": "1600px"
       }
     },
   },
