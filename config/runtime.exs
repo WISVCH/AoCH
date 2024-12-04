@@ -36,6 +36,14 @@ if config_env() == :prod do
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
 
+  aoc_session_cookie =
+    System.get_env("ADVENT_OF_CODE_SESSION_COOKIE") ||
+      raise("""
+      environment variable ADVENT_OF_CODE_SESSION_COOKIE is missing.
+      """)
+
+  config :aoch, aoc_session_cookie: aoc_session_cookie
+
   config :aoch, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :aoch, AoCHWeb.Endpoint,
