@@ -27,11 +27,19 @@ Hooks = {}
 Hooks.ScrollToBottom = {
   mounted() {
     setInterval(() => {
-      window.scrollBy({
-        top: window.innerHeight-100,
-        left: 0,
-        behavior: 'smooth' // Optional for smooth scrolling
-      });
+      if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight) {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: 'smooth'
+        });
+      } else {
+        window.scrollBy({
+          top: window.innerHeight * 0.70,
+          left: 0,
+          behavior: 'smooth' // Optional for smooth scrolling
+        });
+      }
     }, 5000)
   }
 }
