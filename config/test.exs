@@ -7,12 +7,6 @@ config :aoch, AoCHWeb.Endpoint,
   secret_key_base: "2Ulk/C7R9FJBWvgIfgaalMPw2N21cZ4NJy9pr5ycGQ5N0gXy7Xm+Fr+3SjeL45tY",
   server: false
 
-# In test we don't send emails
-config :aoch, AoCH.Mailer, adapter: Swoosh.Adapters.Test
-
-# Disable swoosh api client as it is only required for production adapters
-config :swoosh, :api_client, false
-
 # Print only warnings and errors during test
 config :logger, level: :warning
 

@@ -22,15 +22,6 @@ config :aoch, AoCHWeb.Endpoint,
   pubsub_server: AoCH.PubSub,
   live_view: [signing_salt: "oq9UP3id"]
 
-# Configures the mailer
-#
-# By default it uses the "Local" adapter which stores the emails
-# locally. You can see the emails in your browser, at "/dev/mailbox".
-#
-# For production it's recommended to configure a different adapter
-# at the `config/runtime.exs`.
-config :aoch, AoCH.Mailer, adapter: Swoosh.Adapters.Local
-
 # Configure esbuild (the version is required)
 config :esbuild,
   version: "0.17.11",
@@ -60,6 +51,8 @@ config :logger, :console,
 
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
+
+config :elixir, :time_zone_database, Tz.TimeZoneDatabase
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
