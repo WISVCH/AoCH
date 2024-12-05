@@ -101,4 +101,5 @@ USER nobody
 # ENTRYPOINT ["/tini", "--"]
 
 RUN chmod +x /app/bin/*
+EXPOSE 8080:8080
 CMD ["/app/bin/server"]
