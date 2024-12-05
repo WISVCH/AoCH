@@ -17,7 +17,7 @@ defmodule AoCHWeb.Router do
   scope "/", AoCHWeb do
     pipe_through :browser
 
-    get "/", PageController, :challenge
+    get "/", PageController, :today
     get "/:year/day/:day/", PageController, :challenge
     get "/:year/day/:day/challenge", PageController, :challenge
     get "/challenge", PageController, :challenge
