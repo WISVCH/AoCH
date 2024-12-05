@@ -202,7 +202,7 @@ defmodule AoCH do
       Req.get(url,
         headers: [
           {"cookie", "session=#{Application.get_env(:aoch, :aoc_session_cookie)}"},
-          {"User-Agent", "https://github.com/kaspervaessen/aoch, kasperv@ch.tudelft.nl"}
+          {"User-Agent", "https://github.com/WISVCH/AoCH, beheer@ch.tudelft.nl"}
         ]
       )
 
@@ -220,7 +220,7 @@ defmodule AoCH do
       Req.get(url,
         headers: [
           {"cookie", "session=#{Application.get_env(:aoch, :aoc_session_cookie)}"},
-          {"User-Agent", "https://github.com/kaspervaessen/aoch, kasperv@ch.tudelft.nl"}
+          {"User-Agent", "https://github.com/WISVCH/AoCH, beheer@ch.tudelft.nl"}
         ]
       )
 
