@@ -26,6 +26,8 @@ defmodule AoCHWeb.Router do
     get "/:year/leaderboard", PageController, :total
     get "/leaderboard/today", PageController, :today
     get "/:year/day/:day/leaderboard/today", PageController, :today
+    get "/data", APIController, :index
+    get "/:year/day/:day/data", APIController, :index
   end
 
   # Other scopes may use custom stacks.

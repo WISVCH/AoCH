@@ -19,7 +19,8 @@ defmodule AoCHWeb.PageController do
   def total(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
-    total = AoCH.get_leaderboard_year(year)
+    day = to_int(params["day"]) || if now.month < 12, do: 25, else: now.day
+    total = AoCH.get_leaderboard_year(day, year)
 
     render(conn, :total,
       year: year,

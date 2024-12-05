@@ -55,7 +55,11 @@ config :aoch, AoCHWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :aoch, dev_routes: true
 
-config :aoch, aoc_session_cookie: System.fetch_env!("ADVENT_OF_CODE_SESSION_COOKIE")
+leaderboard_id = System.get_env("leaderboard_id") || "954860"
+
+config :aoch,
+  aoc_session_cookie: System.fetch_env!("ADVENT_OF_CODE_SESSION_COOKIE"),
+  leaderboard_id: leaderboard_id
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

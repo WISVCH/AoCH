@@ -8,13 +8,18 @@ defmodule AoCH do
   """
 
   def get_leaderboard_day(day, year) do
-    {leaderboard_day, _} = get_data(year, day)
+    {leaderboard_day, _, _} = get_data(year, day)
     leaderboard_day
   end
 
-  def get_leaderboard_year(year) do
-    {_, leaderboard} = get_data(year, 25)
+  def get_leaderboard_year(day, year) do
+    {_, leaderboard, _} = get_data(year, day)
     leaderboard
+  end
+
+  def get_api_data(day, year) do
+    {_, _, data} = get_data(year, day)
+    data
   end
 
   def get_challenge(day, year) do
@@ -47,9 +52,32 @@ defmodule AoCH do
       raw_data = request_raw_data(year)
       leaderboard_day = parse_leaderboard_day(raw_data, day, year)
       leaderboard = parse_leaderboard_year(raw_data)
+      day_challenge = get_challenge(day, year)
 
-      {leaderboard_day, leaderboard}
+      data =
+        %{
+          assignment: day_challenge,
+          today: leaderboard_day |> Enum.map(&assign_time_strings/1),
+          total: leaderboard
+        }
+
+      {leaderboard_day, leaderboard, data}
     end)
+  end
+
+  defp assign_time_strings(map) do
+    map =
+      if map[:first_star] do
+        Map.put(map, :star1, AoCHWeb.format_time(map[:first_star]))
+      else
+        map
+      end
+
+    if map[:second_star] do
+      Map.put(map, :star2, "+ " <> AoCHWeb.format_time(map[:second_star]))
+    else
+      map
+    end
   end
 
   defp parse_leaderboard_day(data, day, year) do
@@ -185,7 +213,8 @@ defmodule AoCH do
   end
 
   defp request_raw_data(year) do
-    url = "https://adventofcode.com/#{year}/leaderboard/private/view/954860.json"
+    url =
+      "https://adventofcode.com/#{year}/leaderboard/private/view/#{Application.get_env(:aoch, :leaderboard_id)}.json"
 
     {:ok, res} =
       Req.get(url,
