@@ -47,7 +47,6 @@ config :aoch, AoCHWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/(?!uploads/).*(js|css|png|jpeg|jpg|gif|svg)$",
-      ~r"priv/gettext/.*(po)$",
       ~r"lib/aoch_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]

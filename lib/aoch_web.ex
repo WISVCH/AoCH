@@ -43,7 +43,6 @@ defmodule AoCHWeb do
         layouts: [html: AoCHWeb.Layouts]
 
       import Plug.Conn
-      import AoCHWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +84,6 @@ defmodule AoCHWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import AoCHWeb.CoreComponents
-      import AoCHWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS
