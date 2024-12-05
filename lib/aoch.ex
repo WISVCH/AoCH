@@ -7,13 +7,54 @@ defmodule AoCH do
   if it comes from the database, an external API or others.
   """
 
-  def get_raw_data(year) do
-    ConCache.get_or_store(:cache, "raw_data_#{year}", fn -> request_raw_data(year) end)
+  def get_leaderboard_day(day, year) do
+    {leaderboard_day, _} = get_data(year, day)
+    leaderboard_day
   end
 
-  def get_leaderboard_day(day, year) do
+  def get_leaderboard_year(year) do
+    {_, leaderboard} = get_data(year, 25)
+    leaderboard
+  end
+
+  def get_challenge(day, year) do
+    ConCache.get_or_store(:cache, "challenge_#{year}_#{day}", fn ->
+      %ConCache.Item{value: request_day_challenge(day, year), ttl: :infinity}
+    end)
+  end
+
+  def now() do
+    DateTime.utc_now() |> DateTime.shift_zone!("America/New_York")
+  end
+
+  def start_of_day(year, day) do
+    now = now()
+
+    %DateTime{
+      now
+      | year: year,
+        month: 12,
+        day: day,
+        hour: 0,
+        minute: 0,
+        second: 0,
+        microsecond: {0, 0}
+    }
+  end
+
+  defp get_data(year, day) do
+    ConCache.get_or_store(:cache, "data_#{year}", fn ->
+      raw_data = request_raw_data(year)
+      leaderboard_day = parse_leaderboard_day(raw_data, day, year)
+      leaderboard = parse_leaderboard_year(raw_data)
+
+      {leaderboard_day, leaderboard}
+    end)
+  end
+
+  defp parse_leaderboard_day(data, day, year) do
     data_per_member =
-      get_raw_data(year)
+      data
       |> Map.get("members", [])
       |> Enum.map(fn {id, data} -> {id, extract_day_data(data, year, day)} end)
       |> Map.new()
@@ -54,38 +95,13 @@ defmodule AoCH do
     |> assign_ranks()
   end
 
-  def get_leaderboard_year(year) do
-    get_raw_data(year)
+  defp parse_leaderboard_year(data) do
+    data
     |> Map.get("members", [])
     |> Enum.map(fn {_id, data} -> extract_year_data(data) end)
     |> Enum.reject(&(&1[:score] == 0))
     |> Enum.sort_by(& &1[:score], :desc)
     |> assign_ranks()
-  end
-
-  def get_challenge(day, year) do
-    ConCache.get_or_store(:cache, "challenge_#{year}_#{day}", fn ->
-      %ConCache.Item{value: request_day_challenge(day, year), ttl: :infinity}
-    end)
-  end
-
-  def now() do
-    DateTime.utc_now() |> DateTime.shift_zone!("America/New_York")
-  end
-
-  def start_of_day(year, day) do
-    now = now()
-
-    %DateTime{
-      now
-      | year: year,
-        month: 12,
-        day: day,
-        hour: 0,
-        minute: 0,
-        second: 0,
-        microsecond: {0, 0}
-    }
   end
 
   defp assign_ranks(data) do
