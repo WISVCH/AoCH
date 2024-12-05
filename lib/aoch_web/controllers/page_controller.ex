@@ -7,14 +7,26 @@ defmodule AoCHWeb.PageController do
     day = to_int(params["day"]) || if now.month < 12, do: 25, else: now.day
 
     today = AoCH.get_leaderboard_day(day, year)
-    render(conn, :today, year: year, today: today, auto_scroll: params["auto_scroll"] == "true")
+
+    render(conn, :today,
+      year: year,
+      today: today,
+      auto_scroll: params["auto_scroll"] == "true",
+      page_title: "Day #{day} leaderboard"
+    )
   end
 
   def total(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
     total = AoCH.get_leaderboard_year(year)
-    render(conn, :total, year: year, scores: total, auto_scroll: params["auto_scroll"] == "true")
+
+    render(conn, :total,
+      year: year,
+      scores: total,
+      auto_scroll: params["auto_scroll"] == "true",
+      page_title: "leaderboard"
+    )
   end
 
   def challenge(conn, params) do
@@ -26,7 +38,8 @@ defmodule AoCHWeb.PageController do
     render(conn, :assignment,
       assignment: assignment,
       year: year,
-      auto_scroll: params["auto_scroll"] == "true"
+      auto_scroll: params["auto_scroll"] == "true",
+      page_title: "Day #{day} challenge"
     )
   end
 
