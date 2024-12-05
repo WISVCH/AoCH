@@ -1,0 +1,22 @@
+<div class="grid grid-cols-6 sm:grid-cols-11 pb-2 font-bold w-full">  
+  <p class="col-span-2">score</p>
+  <p class="col-span-3">name</p>
+  <p class="col-span-6">stars</p> 
+</div>
+<div 
+  id="scores"
+  :for={person <- @scores} 
+  class="grid grid-cols-6 sm:grid-cols-11 w-full" 
+  phx-hook={@auto_scroll && "ScrollToBottom"}
+  >
+  <p><%= person[:rank] %>)</p>
+  <p class="text-primary"><%= person[:score] %></p>
+  <p class="col-span-3"><%= AoCHWeb.name(person[:name]) %></p>
+  <p class="col-span-6 sm:text-xl leading-none flex flex-row justify-between">
+      <span :for={star <- person[:stars]} class={[
+      star == 2 && "text-accent",
+      star == 1 && "text-accent2",
+      star == 0 && "text-disabled"
+      ]}>*</span>
+  </p>
+</div>
