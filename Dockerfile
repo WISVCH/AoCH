@@ -7,14 +7,13 @@
 # This file is based on these images:
 #
 #   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
-#   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20241016-slim - for the release image
+#   - https://hub.docker.com/_/debian?tab=tags&page=1&name=bullseye-20241202-slim - for the release image
 #   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: hexpm/elixir:1.17.3-erlang-27.1.2-debian-bullseye-20241016-slim
+#   - Ex: hexpm/elixir:1.17.3-erlang-27.1.2-debian-bullseye-20241202-slim
 #
 ARG ELIXIR_VERSION=1.17.3
 ARG OTP_VERSION=27.1.2
-ARG DEBIAN_VERSION=bullseye-20241016-slim
-ARG NODEJS_VERSION=20.18.0
+ARG DEBIAN_VERSION=bullseye-20241202-slim
 
 ARG BUILDER_IMAGE="hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
@@ -22,10 +21,7 @@ ARG RUNNER_IMAGE="debian:${DEBIAN_VERSION}"
 FROM ${BUILDER_IMAGE} as builder
 
 # install build dependencies
-RUN apt-get update -y  \
-    && apt-get install -y build-essential git \
-    && curl -fsSL https://deb.nodesource.com/setup_$NODEJS_VERSION.x | bash - \
-    && apt-get install nodejs npm -y \
+RUN apt-get update -y && apt-get install -y build-essential git \
     && apt-get clean && rm -f /var/lib/apt/lists/*_*
 
 # prepare build dir
@@ -53,10 +49,9 @@ COPY priv priv
 
 COPY lib lib
 
-# compile assets
 COPY assets assets
 
-RUN npm i --prefix assets
+# compile assets
 RUN mix assets.deploy
 
 # Compile the release
@@ -66,7 +61,6 @@ RUN mix compile
 COPY config/runtime.exs config/
 
 COPY rel rel
-
 RUN mix release
 
 # start a new build stage so that the final image will only contain
@@ -100,6 +94,4 @@ USER nobody
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
-RUN chmod +x /app/bin/*
-EXPOSE 8080:8080
 CMD ["/app/bin/server"]
