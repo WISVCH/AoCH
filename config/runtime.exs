@@ -33,8 +33,8 @@ if config_env() == :prod do
       You can generate one by calling: mix phx.gen.secret
       """
 
-  host = System.get_env("PHX_HOST") || "example.com"
-  port = String.to_integer(System.get_env("PORT") || "4000")
+  host = System.get_env("PHX_HOST") || "aoch.wisv.ch"
+  port = String.to_integer(System.get_env("PORT") || "8080")
 
   aoc_session_cookie =
     System.get_env("session") ||
