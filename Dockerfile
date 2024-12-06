@@ -94,5 +94,6 @@ USER nobody
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
+RUN chmod +x /app/bin/server
 EXPOSE 8080:8080
 CMD ["/app/bin/server"]
