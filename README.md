@@ -1,4 +1,4 @@
-# AoCH Leaderboard 
+# AoCH Leaderboard
 
 This project shows the current statistics and leaderboard of CH members for the AoC.
 
@@ -11,6 +11,17 @@ This script follows the guidelines stated by [Advent of Code](https://www.reddit
 - the puzzle for each day is requested only once and 'cached' runtime only, so restarting the server removes the 'cache'.
 
 ## Start server
+
+### ENV variables
+
+The following environment variables are expected:
+
+* session
+  This is the session cookie of a advent of code user that is enrolled in the leaderboard.
+* leaderboard_id
+  The id of the AOC leaderboard to show. Default to the CH leaderboard.
+* SECRET_KEY_BASE
+  A keybase used for security purposes. It can be generated with mix phx.gen.secret. If you dont have mix installed, any other 32 byte long string will do.
 
 ### With Mix
 
