@@ -4,7 +4,7 @@ defmodule AoCHWeb.PageController do
   def today(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
-    day = to_int(params["day"]) || if now.month < 12, do: 25, else: now.day
+    day = to_int(params["day"]) || if now.month < 12 or now.day > 25, do: 25, else: now.day
 
     today = AoCH.get_leaderboard_day(day, year)
 
@@ -19,8 +19,7 @@ defmodule AoCHWeb.PageController do
   def total(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
-    day = to_int(params["day"]) || if now.month < 12, do: 25, else: now.day
-    total = AoCH.get_leaderboard_year(day, year)
+    total = AoCH.get_leaderboard_year(year)
 
     render(conn, :total,
       year: year,
@@ -33,7 +32,7 @@ defmodule AoCHWeb.PageController do
   def challenge(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
-    day = to_int(params["day"]) || if now.month < 12, do: 25, else: now.day
+    day = to_int(params["day"]) || if now.month < 12 or now.day > 25, do: 25, else: now.day
     assignment = AoCH.get_challenge(day, year)
 
     render(conn, :assignment,
