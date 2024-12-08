@@ -8,18 +8,35 @@ defmodule AoCH do
   """
 
   def get_leaderboard_day(day, year) do
-    {leaderboard_day, _, _} = get_data(year, day)
-    leaderboard_day
+    raw_data = get_data(year)
+
+    ConCache.get_or_store(:cache, "leaderboard_day_#{year}_#{day}", fn ->
+      parse_leaderboard_day(raw_data, day, year)
+    end)
   end
 
-  def get_leaderboard_year(day, year) do
-    {_, leaderboard, _} = get_data(year, day)
-    leaderboard
+  def get_leaderboard_year(year) do
+    raw_data = get_data(year)
+
+    ConCache.get_or_store(:cache, "leaderboard_#{year}", fn ->
+      parse_leaderboard_year(raw_data)
+    end)
   end
 
   def get_api_data(day, year) do
-    {_, _, data} = get_data(year, day)
-    data
+    raw_data = get_data(year)
+
+    ConCache.get_or_store(:cache, "data_#{year}_#{day}", fn ->
+      leaderboard_day = parse_leaderboard_day(raw_data, day, year)
+      leaderboard = parse_leaderboard_year(raw_data)
+      day_challenge = get_challenge(day, year)
+
+      %{
+        assignment: day_challenge,
+        today: leaderboard_day |> Enum.map(&assign_time_strings/1),
+        total: leaderboard
+      }
+    end)
   end
 
   def get_challenge(day, year) do
@@ -47,21 +64,16 @@ defmodule AoCH do
     }
   end
 
-  defp get_data(year, day) do
+  defp get_data(year) do
     ConCache.get_or_store(:cache, "data_#{year}", fn ->
-      raw_data = request_raw_data(year)
-      leaderboard_day = parse_leaderboard_day(raw_data, day, year)
-      leaderboard = parse_leaderboard_year(raw_data)
-      day_challenge = get_challenge(day, year)
+      for day <- 1..25 do
+        ConCache.delete(:cache, "leaderboard_day_#{year}_#{day}")
+        ConCache.delete(:cache, "data_#{year}_#{day}")
+      end
 
-      data =
-        %{
-          assignment: day_challenge,
-          today: leaderboard_day |> Enum.map(&assign_time_strings/1),
-          total: leaderboard
-        }
+      ConCache.delete(:cache, "leaderboard_#{year}")
 
-      {leaderboard_day, leaderboard, data}
+      request_raw_data(year)
     end)
   end
 
