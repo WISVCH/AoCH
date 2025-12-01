@@ -19,7 +19,7 @@ defmodule AoCH do
     raw_data = get_data(year)
 
     ConCache.get_or_store(:cache, "leaderboard_#{year}", fn ->
-      parse_leaderboard_year(raw_data)
+      parse_leaderboard_year(raw_data, year)
     end)
   end
 
@@ -28,7 +28,7 @@ defmodule AoCH do
 
     ConCache.get_or_store(:cache, "data_#{year}_#{day}", fn ->
       leaderboard_day = parse_leaderboard_day(raw_data, day, year)
-      leaderboard = parse_leaderboard_year(raw_data)
+      leaderboard = parse_leaderboard_year(raw_data, year)
       day_challenge = get_challenge(day, year)
 
       %{
@@ -65,8 +65,10 @@ defmodule AoCH do
   end
 
   defp get_data(year) do
+    last_day = if year < 2025, do: 25, else: 12
+
     ConCache.get_or_store(:cache, "data_#{year}", fn ->
-      for day <- 1..12 do
+      for day <- 1..last_day do
         ConCache.delete(:cache, "leaderboard_day_#{year}_#{day}")
         ConCache.delete(:cache, "data_#{year}_#{day}")
       end
@@ -135,10 +137,10 @@ defmodule AoCH do
     |> assign_ranks()
   end
 
-  defp parse_leaderboard_year(data) do
+  defp parse_leaderboard_year(data, year) do
     data
     |> Map.get("members", [])
-    |> Enum.map(fn {_id, data} -> extract_year_data(data) end)
+    |> Enum.map(fn {_id, data} -> extract_year_data(data, year) end)
     |> Enum.reject(&(&1[:score] == 0))
     |> Enum.sort_by(& &1[:score], :desc)
     |> assign_ranks()
@@ -160,9 +162,11 @@ defmodule AoCH do
     |> Enum.reverse()
   end
 
-  defp extract_year_data(data) do
+  defp extract_year_data(data, year) do
+    last_day = if year < 2025, do: 25, else: 12
+
     stars =
-      1..12
+      1..last_day
       |> Enum.map(fn day ->
         case data["completion_day_level"][Integer.to_string(day)] do
           nil -> 0
