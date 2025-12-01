@@ -4,7 +4,9 @@ defmodule AoCHWeb.APIController do
   def index(conn, params) do
     now = AoCH.now()
     year = to_int(params["year"]) || if now.month == 12, do: now.year, else: now.year - 1
-    day = to_int(params["day"]) || if now.month < 12, do: 12, else: now.day
+
+    last_day = if year < 2025, do: 25, else: 12
+    day = to_int(params["day"]) || if now.month < 12, do: last_day, else: now.day
 
     data = AoCH.get_api_data(day, year)
 
