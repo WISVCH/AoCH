@@ -66,7 +66,7 @@ defmodule AoCH do
 
   defp get_data(year) do
     ConCache.get_or_store(:cache, "data_#{year}", fn ->
-      for day <- 1..25 do
+      for day <- 1..12 do
         ConCache.delete(:cache, "leaderboard_day_#{year}_#{day}")
         ConCache.delete(:cache, "data_#{year}_#{day}")
       end
@@ -162,7 +162,7 @@ defmodule AoCH do
 
   defp extract_year_data(data) do
     stars =
-      1..25
+      1..12
       |> Enum.map(fn day ->
         case data["completion_day_level"][Integer.to_string(day)] do
           nil -> 0
